@@ -1,6 +1,6 @@
 package core;
 
-public class Card {
+public class Card implements Comparable<Card> {
 
 	private Suit suit;
 	private Rank rank;
@@ -20,5 +20,13 @@ public class Card {
 		
 		Card c = (Card) obj;
 		return suit == c.suit && rank == c.rank;
+	}
+
+	public int compareTo(Card c) {
+		int rankCompare = rank.compareTo(c.rank);
+		
+		if (rankCompare == 0)
+			return suit.compareTo(c.suit);
+		return rankCompare;
 	}
 }

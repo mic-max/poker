@@ -1,7 +1,7 @@
 package core;
 
 public enum Suit {
-	Spade('S'), Heart('H'), Diamond('D'), Club('C');
+	Club('C'), Diamond('D'), Heart('H'), Spade('S');
 	
 	private char suit;
 	

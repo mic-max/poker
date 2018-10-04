@@ -20,7 +20,7 @@ public class CardTest extends TestCase {
 		Card c4 = new Card("D7");
 		
 		assertTrue(c1.compareTo(c2) > 0);
-		assertTrue(c3.compareTo(c2) < 0); // same suit
+		assertTrue(c3.compareTo(c2) < 0); // same rank
 		assertTrue(c1.compareTo(c3) > 0);
 		assertEquals(0, c3.compareTo(c4)); // same card
 	}
