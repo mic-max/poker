@@ -54,6 +54,14 @@ public class Hand {
 	public boolean hasTriple() {
 		return rankMap.containsValue(3);
 	}
+	
+	public boolean hasFourOfKind() {
+		return rankMap.containsValue(4);
+	}
+	
+	public boolean isFlush() {
+		return suitMap.containsValue(5);
+	}
 
 	// make these return optionals? that if true have the cards associated with the hand?
 	// could return all pairs, then test can check for 0, 1 or 2
