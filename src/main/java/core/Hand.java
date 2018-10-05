@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class Hand {
 
@@ -14,6 +15,8 @@ public class Hand {
 	private Map<Rank, Integer> rankMap;
 	
 	public Hand(String... rankSuit) {
+		if (rankSuit.length != 5)
+			throw new IllegalArgumentException();
 		cards = new ArrayList<>(5);
 		suitMap = new HashMap<>(5);
 		rankMap = new HashMap<>(5);
@@ -67,5 +70,28 @@ public class Hand {
 	// could return all pairs, then test can check for 0, 1 or 2
 	public boolean hasPair() {
 		return rankMap.containsValue(2);
+	}
+
+	public boolean isStraight() {
+		Collections.sort(cards);
+		
+		boolean hasAce = cards.get(4).getRank() == Rank.Ace;
+		int topCardValue = cards.get(hasAce ? 3 : 4).getRank().getValue();
+		int lowCardValue = cards.get(0).getRank().getValue();
+		
+		if (hasAce)
+			return lowCardValue == 2 && topCardValue == 5 // ace low
+					|| lowCardValue == 10 && topCardValue == 13; // ace high
+		
+		// no ace
+		return lowCardValue + 4 == topCardValue;
+	}
+
+	public boolean isFullHouse() {
+		return rankMap.containsValue(2) && rankMap.containsValue(3);
+	}
+
+	public boolean hasTwoPairs() {
+		return rankMap.values().containsAll(Arrays.asList(2, 2));
 	}
 }
