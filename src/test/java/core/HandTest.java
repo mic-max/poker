@@ -28,4 +28,18 @@ public class HandTest extends TestCase {
 		assertTrue(h1.hasTriple());
 		assertFalse(nothing.hasTriple());
 	}
+	
+	public void testFourOfKind() {
+		Hand h1 = new Hand("D5", "S5", "C5", "H5", "SA");
+		
+		assertTrue(h1.hasFourOfKind());
+		assertFalse(nothing.hasFourOfKind());
+	}
+	
+	public void testFlush() {
+		Hand h1 = new Hand("S5", "S7", "SJ", "SQ", "SK");
+		
+		assertTrue(h1.isFlush());
+		assertFalse(nothing.isFlush());
+	}
 }
