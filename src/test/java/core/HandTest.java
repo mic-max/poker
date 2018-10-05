@@ -22,6 +22,15 @@ public class HandTest extends TestCase {
 		assertFalse(nothing.hasPair());
 	}
 	
+	public void testTwoPairs() {
+		Hand h1 = new Hand("SA", "HA", "CK", "HK", "C2");
+		Hand h2 = new Hand("D5", "S5", "C5", "H5", "SA");
+		
+		assertTrue(h1.hasTwoPairs());
+		assertFalse(h2.hasTwoPairs());
+		assertFalse(nothing.hasTwoPairs());
+	}
+	
 	public void testTriple() {
 		Hand h1 = new Hand("S5", "D5", "H5", "C6", "C9"); // triple 5
 		
@@ -36,10 +45,30 @@ public class HandTest extends TestCase {
 		assertFalse(nothing.hasFourOfKind());
 	}
 	
+	public void testFullHouse() {
+		Hand h1 = new Hand("D5", "S5", "C5", "H4", "S4");
+		Hand h2 = new Hand("S10", "D10", "H10", "HA", "D6");
+		
+		assertTrue(h1.isFullHouse());
+		assertFalse(h2.isFullHouse());
+		assertFalse(nothing.isFullHouse());
+		
+	}
+	
 	public void testFlush() {
 		Hand h1 = new Hand("S5", "S7", "SJ", "SQ", "SK");
 		
 		assertTrue(h1.isFlush());
 		assertFalse(nothing.isFlush());
 	}
+	
+	public void testStraight() {
+		Hand h1 = new Hand("SA", "C2", "H3", "S4", "D5");
+		Hand h2 = new Hand("HA", "HK", "CQ", "S10", "DJ");
+		
+		assertTrue(h1.isStraight());
+		assertTrue(h2.isStraight());
+		assertFalse(nothing.isStraight());
+	}
+	
 }
