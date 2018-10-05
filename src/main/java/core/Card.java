@@ -17,6 +17,14 @@ public class Card implements Comparable<Card> {
 		this.suit = suit;
 		this.rank = rank;
 	}
+	
+	public Suit getSuit() {
+		return suit;
+	}
+	
+	public Rank getRank() {
+		return rank;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
