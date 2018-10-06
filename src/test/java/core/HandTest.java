@@ -6,6 +6,16 @@ public class HandTest extends TestCase {
 	
 	private static Hand nothing = new Hand("D2", "C4", "H6", "S8", "CQ"); // high queen
 
+	private static Hand pair = new Hand("SA", "HA", "C4", "C7", "D3");
+	private static Hand twoPair = new Hand("D2", "S2", "C6", "D6", "HK");
+	private static Hand threeOfKind = new Hand("D10", "C10", "H10", "C2", "D5");
+	private static Hand straight = new Hand("D3", "C4", "H5", "H6", "H7");
+	private static Hand flush = new Hand("DK", "DJ", "D9", "D4", "D6");
+	private static Hand fullHouse = new Hand("S4", "C4", "H4", "DJ", "CJ");
+	private static Hand fourOfKind = new Hand("S9", "D9", "H9", "C9", "C2");
+	private static Hand straightFlush = new Hand("D8", "D9", "D10", "DJ", "DQ");
+	private static Hand royalFlush = new Hand("HA", "HK", "HQ", "HJ", "H10");
+
 	public void testEquality() {
 		Hand h1 = new Hand("SA", "S2", "S3", "S4", "S5");
 		Hand h2 = new Hand("SA", "S2", "S3", "S4", "S5");
@@ -93,5 +103,17 @@ public class HandTest extends TestCase {
 		assertEquals(new Card("SA"), h1.getHighCard());
 		// TODO what is the high card in a straight with ace low, 5 or A
 		assertEquals(new Card("SA"), h2.getHighCard());
+	}
+	
+	public void testComparingDifferentHands() {
+		assertTrue(pair.compareTo(twoPair) < 0);
+		assertTrue(twoPair.compareTo(threeOfKind) < 0);
+		assertTrue(threeOfKind.compareTo(straight) < 0);
+		assertTrue(straight.compareTo(flush) < 0);
+		assertTrue(flush.compareTo(fullHouse) < 0);
+		assertTrue(fullHouse.compareTo(fourOfKind) < 0);
+		assertTrue(fourOfKind.compareTo(straightFlush) < 0);
+		assertTrue(straightFlush.compareTo(royalFlush) < 0);
+		assertTrue(royalFlush.compareTo(nothing) > 0);
 	}
 }
