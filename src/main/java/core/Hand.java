@@ -114,6 +114,10 @@ public class Hand implements Comparable<Hand> {
 	}
 
 	public Card getHighCard() {
+		Card top2 = cards.get(3);
+		if (isStraight() && top2.getRank() == Rank.Five)
+			return top2;
+		
 		return cards.get(4);
 	}
 	
@@ -123,22 +127,34 @@ public class Hand implements Comparable<Hand> {
 		
 		if (flush && straight) {
 			return STRAIGHT_FLUSH + getHighCard().value();
-			// TODO multiply rank by # of ranks + add suits number value
 		} else if (hasFourOfKind()) {
-			return FOUR_OF_A_KIND; // + the cards that formed the four of kind
+			Card top = cards.get(4);
+			if (cards.get(0).getRank() == cards.get(3).getRank())
+				top = cards.get(0);
+			return FOUR_OF_A_KIND + top.value();
 		} else if (isFullHouse()) {
-			// card2 is always part of the 3 pair when sorted
 			return FULL_HOUSE + cards.get(2).value();
 		} else if (flush) {
-			return FLUSH + getHighCard().value();
+			int score = 0;
+			// TODO refactor SA card out and + 20 is just for a little extra padding
+			for (int i = 4; i >= 0; i--)
+				score += cards.get(i).value() + (new Card("SA").value() + 20) * i;
+			return FLUSH + score;
 		} else if (straight) {
 			return STRAIGHT + getHighCard().value();
 		} else if (hasTriple()) {
 			return SET + cards.get(2).value();
 		} else if (hasTwoPairs()) {
-			return TWO_PAIRS; // TODO hipair*14^2 + lowPair*14 + otherCard
+			Card top = cards.get(4);
+			if (top.getRank() != cards.get(3).getRank())
+				top = cards.get(3);
+			return TWO_PAIRS + top.value(); // + highest card of the both pairs .value()
 		} else if (hasPair()) {
-			return ONE_PAIR; // pair*14 + hicard (thats not part of the pair)
+			Card top = cards.get(4);
+
+			for (int i = 3; top.getRank() != cards.get(i).getRank(); i--)
+				top = cards.get(i);
+			return ONE_PAIR + top.value();
 		}
 		
 		return getHighCard().value();
@@ -146,7 +162,12 @@ public class Hand implements Comparable<Hand> {
 
 	@Override
 	public int compareTo(Hand h) {
-		// throw error if hands contain any of the same cards
+		List<Card> common = new ArrayList<>(cards);
+		common.retainAll(h.getCards());
+		
+		if (common.size() != 0)
+			throw new IllegalStateException("Cannot compare hands with the same card: " + common);
+		
 		return scoreHand() - h.scoreHand();
 	}
 }

@@ -31,6 +31,11 @@ public enum Rank {
 		return value;
 	}
 	
+	@Override
+	public String toString() {
+		return this.rank;
+	}
+	
 	public static Rank getEnum(String value) {
 		for (Rank v : values())
 			if (v.rank.equals(value)) return v;

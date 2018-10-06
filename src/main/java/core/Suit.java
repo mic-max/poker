@@ -26,6 +26,11 @@ public enum Suit {
 			if (v.suit == value) return v;
 		throw new IllegalArgumentException();
 	}
+	
+	@Override
+	public String toString() {
+		return "" + this.suit;
+	}
 
 	public int getValue() {
 		return value;
