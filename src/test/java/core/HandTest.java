@@ -71,4 +71,27 @@ public class HandTest extends TestCase {
 		assertFalse(nothing.isStraight());
 	}
 	
+	public void testRoyalFlush() {
+		Hand h1 = new Hand("SA", "SK", "SQ", "SJ", "S10");
+		
+		assertTrue(h1.isRoyalFlush());
+		assertFalse(nothing.isRoyalFlush());
+	}
+	
+	public void testStraightFlush() {
+		Hand h1 = new Hand("S8", "S9", "S10", "SJ", "SQ");
+		
+		assertTrue(h1.isStraightFlush());
+		assertFalse(nothing.isStraightFlush());
+	}
+	
+	public void testHighCard() {
+		Hand h1 = new Hand("SA", "HA", "C2", "C3", "C4"); // pair aces
+		Hand h2 = new Hand("SA", "C2", "H3", "S4", "D5");
+		
+		assertEquals(new Card("CQ"), nothing.getHighCard());
+		assertEquals(new Card("SA"), h1.getHighCard());
+		// TODO what is the high card in a straight with ace low, 5 or A
+		assertEquals(new Card("SA"), h2.getHighCard());
+	}
 }
