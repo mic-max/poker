@@ -8,7 +8,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
-public class Hand {
+public class Hand implements Comparable<Hand> {
+	
+	private static final int STRAIGHT_FLUSH = 8000000;
+	private static final int FOUR_OF_A_KIND = 7000000;
+	private static final int FULL_HOUSE     = 6000000;
+	private static final int FLUSH          = 5000000;
+	private static final int STRAIGHT       = 4000000;
+	private static final int SET            = 3000000;
+	private static final int TWO_PAIRS      = 2000000;
+	private static final int ONE_PAIR       = 1000000;
 
 	private List<Card> cards;
 	private Map<Suit, Integer> suitMap;
@@ -17,6 +26,7 @@ public class Hand {
 	public Hand(String... rankSuit) {
 		if (rankSuit.length != 5)
 			throw new IllegalArgumentException();
+		// check that all values in rankSuit are unique, else throw exception
 		cards = new ArrayList<>(5);
 		suitMap = new HashMap<>();
 		rankMap = new HashMap<>();
@@ -71,7 +81,7 @@ public class Hand {
 	// make these return optionals? that if true have the cards associated with the hand?
 	// could return all pairs, then test can check for 0, 1 or 2
 	public boolean hasPair() {
-		return rankMap.containsValue(2);
+		return Collections.frequency(rankMap.values(), 2) == 1;
 	}
 
 	public boolean isStraight() {
@@ -92,7 +102,7 @@ public class Hand {
 	}
 
 	public boolean hasTwoPairs() {
-		return rankMap.values().containsAll(Arrays.asList(2, 2));
+		return Collections.frequency(rankMap.values(), 2) == 2;
 	}
 
 	public boolean isRoyalFlush() {
@@ -105,5 +115,38 @@ public class Hand {
 
 	public Card getHighCard() {
 		return cards.get(4);
+	}
+	
+	private int scoreHand() {
+		boolean flush = isFlush();
+		boolean straight = isStraight();
+		
+		if (flush && straight) {
+			return STRAIGHT_FLUSH + getHighCard().value();
+			// TODO multiply rank by # of ranks + add suits number value
+		} else if (hasFourOfKind()) {
+			return FOUR_OF_A_KIND; // + the cards that formed the four of kind
+		} else if (isFullHouse()) {
+			// card2 is always part of the 3 pair when sorted
+			return FULL_HOUSE + cards.get(2).value();
+		} else if (flush) {
+			return FLUSH + getHighCard().value();
+		} else if (straight) {
+			return STRAIGHT + getHighCard().value();
+		} else if (hasTriple()) {
+			return SET + cards.get(2).value();
+		} else if (hasTwoPairs()) {
+			return TWO_PAIRS; // TODO hipair*14^2 + lowPair*14 + otherCard
+		} else if (hasPair()) {
+			return ONE_PAIR; // pair*14 + hicard (thats not part of the pair)
+		}
+		
+		return getHighCard().value();
+	}
+
+	@Override
+	public int compareTo(Hand h) {
+		// throw error if hands contain any of the same cards
+		return scoreHand() - h.scoreHand();
 	}
 }

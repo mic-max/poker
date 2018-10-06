@@ -25,6 +25,10 @@ public class Card implements Comparable<Card> {
 	public Rank getRank() {
 		return rank;
 	}
+	
+	public int value() {
+		return rank.getValue() * Rank.Ace.getValue() + suit.getValue();
+	}
 
 	@Override
 	public boolean equals(Object obj) {
