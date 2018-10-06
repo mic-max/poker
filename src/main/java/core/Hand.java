@@ -18,8 +18,8 @@ public class Hand {
 		if (rankSuit.length != 5)
 			throw new IllegalArgumentException();
 		cards = new ArrayList<>(5);
-		suitMap = new HashMap<>(5);
-		rankMap = new HashMap<>(5);
+		suitMap = new HashMap<>();
+		rankMap = new HashMap<>();
 
 		for (String rs : rankSuit) {
 			Card c = new Card(rs);
@@ -31,6 +31,8 @@ public class Hand {
 			suitMap.put(s, suitMap.containsKey(s) ? suitMap.get(s) + 1 : 1);
 			rankMap.put(r, rankMap.containsKey(r) ? rankMap.get(r) + 1 : 1);
 		}
+
+		Collections.sort(cards);
 	}
 	
 	public List<Card> getCards() {
@@ -73,8 +75,6 @@ public class Hand {
 	}
 
 	public boolean isStraight() {
-		Collections.sort(cards);
-		
 		boolean hasAce = cards.get(4).getRank() == Rank.Ace;
 		int topCardValue = cards.get(hasAce ? 3 : 4).getRank().getValue();
 		int lowCardValue = cards.get(0).getRank().getValue();
@@ -93,5 +93,17 @@ public class Hand {
 
 	public boolean hasTwoPairs() {
 		return rankMap.values().containsAll(Arrays.asList(2, 2));
+	}
+
+	public boolean isRoyalFlush() {
+		return isStraightFlush() && getHighCard().getRank() == Rank.Ace;
+	}
+
+	public boolean isStraightFlush() {
+		return isStraight() && isFlush();
+	}
+
+	public Card getHighCard() {
+		return cards.get(4);
 	}
 }
