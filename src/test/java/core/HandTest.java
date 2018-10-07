@@ -1,5 +1,7 @@
 package core;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 
 public class HandTest extends TestCase {
@@ -156,11 +158,11 @@ public class HandTest extends TestCase {
 	
 	public void testCompareFlushes() {
 		Hand flHeart = new Hand("HK", "HJ", "H9", "H4", "H6");
-		Hand flHeart2 = new Hand("HK", "HJ", "H9", "H4", "H5");
+		Hand flHeart2 = new Hand("SK", "SJ", "S9", "S4", "S5");
 		Hand flClub = new Hand("CA", "CJ", "C3", "C9", "C10");
 		
 		assertTrue(flHeart.compareTo(flush) > 0);
-		assertTrue(flHeart2.compareTo(flush) < 0);
+		assertTrue(flHeart2.compareTo(flush) < 0); // DK", "DJ", "D9", "D4", "D6
 		assertTrue(flClub.compareTo(flush) > 0);
 	}
 	
@@ -198,5 +200,29 @@ public class HandTest extends TestCase {
 		assertTrue(rfSpade.compareTo(royalFlush) > 0);
 		assertTrue(royalFlush.compareTo(rfDiamond) > 0);
 		assertTrue(rfDiamond.compareTo(rfClub) > 0);
+	}
+
+	public void testNoExchange() {
+		List<Card> stExchange = straight.exchange();
+		List<Card> flExchange = flush.exchange();
+		List<Card> fhExchange = fullHouse.exchange();
+		List<Card> f4Exchange = fourOfKind.exchange();
+		List<Card> sfExchange = straightFlush.exchange();
+		List<Card> rfExchange = royalFlush.exchange();
+		
+		assertNull(stExchange);
+		assertNull(flExchange);
+		assertNull(fhExchange);
+		assertNull(f4Exchange);
+		assertNull(sfExchange);
+		assertNull(rfExchange);
+	}
+	
+	public void test1AwayFlush() {
+		Hand flush1Away = new Hand("D5", "D6", "D10", "C5", "DA");
+		List<Card> ex1 = flush1Away.exchange();
+		
+		assertEquals(1, ex1.size());
+		assertTrue(ex1.contains(new Card("C5")));
 	}
 }
