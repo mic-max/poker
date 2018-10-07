@@ -2,9 +2,10 @@ package core;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -77,6 +78,15 @@ public class Hand implements Comparable<Hand> {
 	public boolean isFlush() {
 		return suitMap.containsValue(5);
 	}
+	
+	public Optional<Suit> is1AwayFlush() {
+		List<Suit> s = suitMap.entrySet()
+        	.stream()
+        	.filter(entry -> entry.getValue() == 4)
+        	.map(Entry::getKey)
+        	.collect(Collectors.toCollection(ArrayList::new));
+		return Optional.ofNullable(s.get(0));
+	}
 
 	// make these return optionals? that if true have the cards associated with the hand?
 	// could return all pairs, then test can check for 0, 1 or 2
@@ -135,10 +145,10 @@ public class Hand implements Comparable<Hand> {
 		} else if (isFullHouse()) {
 			return FULL_HOUSE + cards.get(2).value();
 		} else if (flush) {
-			int score = 0;
-			// TODO refactor SA card out and + 20 is just for a little extra padding
+			int score = cards.get(0).getSuit().getValue();
+			// TODO refactor this
 			for (int i = 4; i >= 0; i--)
-				score += cards.get(i).value() + (new Card("SA").value() + 20) * i;
+				score += cards.get(i).getRank().getValue() * Rank.Ace.getValue() * (i+2);
 			return FLUSH + score;
 		} else if (straight) {
 			return STRAIGHT + getHighCard().value();
@@ -148,7 +158,7 @@ public class Hand implements Comparable<Hand> {
 			Card top = cards.get(4);
 			if (top.getRank() != cards.get(3).getRank())
 				top = cards.get(3);
-			return TWO_PAIRS + top.value(); // + highest card of the both pairs .value()
+			return TWO_PAIRS + top.value();
 		} else if (hasPair()) {
 			Card top = cards.get(4);
 
@@ -169,5 +179,20 @@ public class Hand implements Comparable<Hand> {
 			throw new IllegalStateException("Cannot compare hands with the same card: " + common);
 		
 		return scoreHand() - h.scoreHand();
+	}
+
+	public List<Card> exchange() {
+		int k = scoreHand();
+		
+		if (k >= STRAIGHT) {
+			return null;
+		} else if (is1AwayFlush().isPresent()) {
+			Suit s = is1AwayFlush().get();
+			return cards.stream().filter(c -> c.getSuit() != s).collect(Collectors.toList());
+			// find flush suit and filter with that
+			// remove any elements that are equal to the suit with 4 already
+		} else {
+			return null;
+		}
 	}
 }
