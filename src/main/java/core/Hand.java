@@ -79,13 +79,13 @@ public class Hand implements Comparable<Hand> {
 		return suitMap.containsValue(5);
 	}
 	
-	public Optional<Suit> is1AwayFlush() {
-		List<Suit> s = suitMap.entrySet()
+	// off should only realistically be 1-3d
+	public Optional<Suit> isNAwayFlush(int off) {
+		return suitMap.entrySet()
         	.stream()
-        	.filter(entry -> entry.getValue() == 4)
+        	.filter(entry -> entry.getValue() == (5 - off))
         	.map(Entry::getKey)
-        	.collect(Collectors.toCollection(ArrayList::new));
-		return Optional.ofNullable(s.get(0));
+        	.findAny();
 	}
 
 	// make these return optionals? that if true have the cards associated with the hand?
@@ -186,11 +186,15 @@ public class Hand implements Comparable<Hand> {
 		
 		if (k >= STRAIGHT) {
 			return null;
-		} else if (is1AwayFlush().isPresent()) {
-			Suit s = is1AwayFlush().get();
+		} else if (isNAwayFlush(1).isPresent()) {
+			Suit s = isNAwayFlush(1).get();
 			return cards.stream().filter(c -> c.getSuit() != s).collect(Collectors.toList());
-			// find flush suit and filter with that
-			// remove any elements that are equal to the suit with 4 already
+		} else if (isNAwayFlush(2).isPresent()) {
+			Suit s = isNAwayFlush(2).get();
+			return cards.stream().filter(c -> c.getSuit() != s).collect(Collectors.toList());
+		} else if (hasTriple()) {
+			Rank r = cards.get(2).getRank();
+			return cards.stream().filter(c -> c.getRank() != r).collect(Collectors.toList());
 		} else {
 			return null;
 		}
