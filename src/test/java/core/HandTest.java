@@ -16,7 +16,7 @@ public class HandTest extends TestCase {
 	private static Hand fullHouse = new Hand("S4", "C4", "H4", "HJ", "CJ");
 	private static Hand fourOfKind = new Hand("S7", "D7", "H7", "C7", "C2");
 	private static Hand straightFlush = new Hand("D8", "D9", "D10", "DJ", "DQ");
-	private static Hand royalFlush = new Hand("HA", "HK", "HQ", "HJ", "H10");
+	private static Hand royalFlush = new Hand("HA", "HK", "HQ", "HJ", "H10");	
 
 	public void testEquality() {
 		Hand h1 = new Hand("SA", "S2", "S3", "S4", "S5");
@@ -241,5 +241,114 @@ public class HandTest extends TestCase {
 		assertEquals(2, ex.size());
 		assertTrue(ex.contains(new Card("C2")));
 		assertTrue(ex.contains(new Card("D5")));
+	}
+
+	public void testSinglePairExchange() {
+		List<Card> ex = pair.exchange();
+
+		assertEquals(3, ex.size());
+		assertTrue(ex.contains(new Card("C4")));
+		assertTrue(ex.contains(new Card("C7")));
+		assertTrue(ex.contains(new Card("D3")));
+	}
+	
+	public void testNothingHandExchange() {
+		List<Card> ex = nothing.exchange();
+
+		assertEquals(3, ex.size());
+		assertTrue(ex.contains(new Card("D2")));
+		assertTrue(ex.contains(new Card("C4")));
+		assertTrue(ex.contains(new Card("H6")));
+	}
+	
+	public void test1AwayRoyalFlush() {
+		Hand rf1Off = new Hand("HA", "HK", "HQ", "C4", "H10");
+		List<Card> ex = rf1Off.exchange();
+
+		assertEquals(1, ex.size());
+		assertTrue(ex.contains(new Card("C4")));
+	}
+	
+	public void test1AwayFullHouse() {
+		List<Card> ex = twoPair.exchange();
+		
+		assertEquals(1, ex.size());
+		assertTrue(ex.contains(new Card("HK")));
+	}
+	
+	public void test1AwayStraightFlush() {
+		Hand oneAwaySF = new Hand("D8", "D9", "D10", "H5", "DQ");
+		List<Card> sfx = oneAwaySF.exchange();
+		
+		assertEquals(1, sfx.size());
+		assertTrue(sfx.contains(Deck.H5));
+	}
+
+	public void test1AwayStraight() {
+		Hand seq4x = new Hand("C4", "H5", "H6", "C7", "H10");
+		List<Card> e4x = seq4x.exchange();
+		assertFalse(seq4x.is1AwayStraight().isPresent());
+		assertEquals(1, e4x.size());
+		assertTrue(e4x.contains(new Card("H10")));
+		
+		Hand seq1x3 = new Hand("C4", "H9", "HJ", "CQ", "HK");
+		List<Card> e1x3 = seq1x3.exchange();
+		assertTrue(seq1x3.is1AwayStraight().isPresent());
+		assertEquals(1, e1x3.size());
+		assertTrue(e1x3.contains(new Card("C4")));
+		
+		Hand seq2x2 = new Hand("C2", "H3", "H6", "CK", "HA");
+		List<Card> e2x2 = seq2x2.exchange();
+		assertFalse(seq2x2.is1AwayStraight().isPresent());
+//		assertEquals(1, e2x2.size());
+//		assertTrue(e2x2.contains(new Card("")));
+		
+		Hand seq3x1 = new Hand("C4", "H5", "H6", "C8", "H10");
+		List<Card> e3x1 = seq3x1.exchange();
+		assertTrue(seq3x1.is1AwayStraight().isPresent());
+		assertEquals(1, e3x1.size());
+		assertTrue(e3x1.contains(new Card("H10"))); // or c4
+		
+		Hand seqx4 = new Hand("C4", "H5", "H6", "C8", "H9");
+		List<Card> ex4 = seqx4.exchange();
+		assertTrue(seqx4.is1AwayStraight().isPresent());
+		assertEquals(1, ex4.size());
+		assertTrue(ex4.contains(new Card("H9"))); // or c4
+		
+		Hand seqPair = new Hand("C4", "H5", "H6", "C6", "H7");
+		List<Card> ePair = seqPair.exchange();
+		assertTrue(seqPair.is1AwayStraight().isPresent());
+		assertEquals(1, ePair.size());
+		assertTrue(ePair.contains(new Card("C6"))); // or h6
+		
+		Hand seqLowA = new Hand("CA", "H2", "H3", "C4", "H10");
+		List<Card> eLowA = seqLowA.exchange();
+		assertTrue(seqLowA.is1AwayStraight().isPresent());
+		assertEquals(1, eLowA.size());
+		assertTrue(eLowA.contains(new Card("H10")));
+		
+		Hand seqHighA = new Hand("CA", "HK", "H6", "CJ", "H10");
+		List<Card> eHighA = seqHighA.exchange();
+		assertTrue(seqHighA.is1AwayStraight().isPresent());
+		assertEquals(1, eHighA.size());
+		assertTrue(eHighA.contains(new Card("H6")));
+		
+		Hand seqLow = new Hand("C2", "H3", "H4", "C5", "H10");
+		List<Card> eLow = seqLow.exchange();
+		assertTrue(seqLow.is1AwayStraight().isPresent());
+		assertEquals(1, eLow.size());
+		assertTrue(eLow.contains(new Card("H10")));
+		
+		Hand seqHigh = new Hand("CK", "HQ", "HJ", "C6", "H10");
+		List<Card> eHigh = seqHigh.exchange();
+		assertTrue(seqHigh.is1AwayStraight().isPresent());
+		assertEquals(1, eHigh.size());
+		assertTrue(eHigh.contains(new Card("C6")));
+		
+		Hand seq4 = new Hand("C5", "H6", "HA", "C8", "H9");
+		List<Card> e4 = seq4.exchange();		
+		assertTrue(seq4.is1AwayStraight().isPresent());
+		assertEquals(1, e4.size());
+		assertTrue(e4.contains(new Card("HA")));
 	}
 }

@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -87,6 +88,53 @@ public class Hand implements Comparable<Hand> {
         	.map(Entry::getKey)
         	.findAny();
 	}
+	
+	// Returns a list of cards that are preventing the straight
+	public Optional<List<Card>> is1AwayStraight() {
+		Hand h = new Hand(toString().split(" "));
+		// check if its already a flush ?
+		
+		for (int i = 0; i < cards.size(); i++) {
+			for (Rank r : Rank.values()) {
+				Card old = h.swap(i, new Card(Suit.Spade, r));
+
+				if (isFlush())
+					return Optional.of(Collections.singletonList(old));
+			}
+		}
+		
+		return Optional.empty();
+	}
+	
+	private void addCard(Card c) {
+		cards.add(c);
+		
+		Suit s = c.getSuit();
+		Rank r = c.getRank();
+		suitMap.put(s, suitMap.containsKey(s) ? suitMap.get(s) + 1 : 1);
+		rankMap.put(r, rankMap.containsKey(r) ? rankMap.get(r) + 1 : 1);
+	}
+	
+	private Card removeCard(int index) {
+		Card ret = cards.remove(index);
+		
+		// if value == 1, remove from map
+		
+		rankMap.put(ret.getRank(), rankMap.get(ret.getRank()) - 1);
+		suitMap.put(ret.getSuit(), suitMap.get(ret.getSuit()) - 1);
+
+		return ret;
+	}
+
+	// take an array of indices, sort in descinding order so index of cards to rmeove doesnt change
+	private Card swap(int i, Card card) {
+		Card ret = removeCard(i);
+		addCard(card);
+
+		Collections.sort(cards);
+
+		return ret;
+	}
 
 	// make these return optionals? that if true have the cards associated with the hand?
 	// could return all pairs, then test can check for 0, 1 or 2
@@ -96,15 +144,15 @@ public class Hand implements Comparable<Hand> {
 
 	public boolean isStraight() {
 		boolean hasAce = cards.get(4).getRank() == Rank.Ace;
-		int topCardValue = cards.get(hasAce ? 3 : 4).getRank().getValue();
-		int lowCardValue = cards.get(0).getRank().getValue();
+		Rank topCardRank = cards.get(hasAce ? 3 : 4).getRank();
+		Rank lowCardRank = cards.get(0).getRank();
 		
 		if (hasAce)
-			return lowCardValue == 2 && topCardValue == 5 // ace low
-					|| lowCardValue == 10 && topCardValue == 13; // ace high
+			return lowCardRank == Rank.Two && topCardRank == Rank.Five // ace low
+					|| lowCardRank == Rank.Ten && topCardRank == Rank.King; // ace high
 		
 		// no ace
-		return lowCardValue + 4 == topCardValue;
+		return lowCardRank.getValue() + 4 == topCardRank.getValue();
 	}
 
 	public boolean isFullHouse() {
@@ -181,22 +229,67 @@ public class Hand implements Comparable<Hand> {
 		return scoreHand() - h.scoreHand();
 	}
 
+	// Returns a list of cards to remove from the players hand
+	// can be null if there is nothing to remove.
 	public List<Card> exchange() {
 		int k = scoreHand();
 		
 		if (k >= STRAIGHT) {
 			return null;
+		} else if (is1AwayRoyalFlush().isPresent()) {
+			return null; // todo
+		} else if (is1AwayStraightFlush().isPresent()) {
+			return null; // todo
+		} else if (is1AwayFullHouse().isPresent()) {
+			return null; // todo
 		} else if (isNAwayFlush(1).isPresent()) {
 			Suit s = isNAwayFlush(1).get();
 			return cards.stream().filter(c -> c.getSuit() != s).collect(Collectors.toList());
+		} else if (is1AwayStraight().isPresent()) {
+			return is1AwayStraight().get();
 		} else if (isNAwayFlush(2).isPresent()) {
 			Suit s = isNAwayFlush(2).get();
 			return cards.stream().filter(c -> c.getSuit() != s).collect(Collectors.toList());
 		} else if (hasTriple()) {
 			Rank r = cards.get(2).getRank();
 			return cards.stream().filter(c -> c.getRank() != r).collect(Collectors.toList());
+		} else if (is2AwayStraight().isPresent()) {
+			return null; // todo
+		} else if (hasPair()) {
+			return null; // todo
 		} else {
-			return null;
+			return cards.subList(3, 5); // keep top 2 cards
 		}
+	}
+
+	public Optional<Suit> is2AwayStraight() {
+		// TODO Auto-generated method stub
+		return Optional.empty();
+	}
+
+	public Optional<Card> is1AwayFullHouse() {
+		// get the 2 pair cards, filter those out return other card
+		return Optional.empty();
+	}
+
+	public Optional<Card> is1AwayStraightFlush() {
+		boolean flush = isFlush();
+		boolean straight = isStraight();
+		
+		
+		if (flush) {
+			
+		} else if (straight) {
+			
+		}
+		
+		return Optional.empty();
+	}
+
+	public Optional<Card> is1AwayRoyalFlush() {
+		// 1 away from a straight and that card is the wrong suit too
+		// have a flush, 1 away from straight
+		// have a straight, one suit is incorrect
+		return Optional.empty();
 	}
 }
