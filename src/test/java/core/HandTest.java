@@ -225,4 +225,21 @@ public class HandTest extends TestCase {
 		assertEquals(1, ex1.size());
 		assertTrue(ex1.contains(new Card("C5")));
 	}
+	
+	public void test2AwayFlush() {
+		Hand flush2Away = new Hand("D5", "D6", "D10", "C5", "HA");
+		List<Card> ex1 = flush2Away.exchange();
+		
+		assertEquals(2, ex1.size());
+		assertTrue(ex1.contains(new Card("C5")));
+		assertTrue(ex1.contains(new Card("HA")));
+	}
+	
+	public void test1AwayFourOfKind() {
+		List<Card> ex = threeOfKind.exchange();
+		
+		assertEquals(2, ex.size());
+		assertTrue(ex.contains(new Card("C2")));
+		assertTrue(ex.contains(new Card("D5")));
+	}
 }
