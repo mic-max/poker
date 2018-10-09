@@ -8,15 +8,15 @@ public class HandTest extends TestCase {
 	
 	private static Hand nothing = new Hand("D2", "C4", "H6", "S8", "CQ"); // high queen
 
-	private static Hand pair = new Hand("SQ", "HQ", "C4", "C7", "D3");
-	private static Hand twoPair = new Hand("D2", "S2", "C6", "D6", "HK");
-	private static Hand threeOfKind = new Hand("D10", "C10", "H10", "C2", "D5");
-	private static Hand straight = new Hand("D3", "C4", "H5", "H6", "H7");
-	private static Hand flush = new Hand("DK", "DJ", "D9", "D4", "D6");
-	private static Hand fullHouse = new Hand("S4", "C4", "H4", "HJ", "CJ");
-	private static Hand fourOfKind = new Hand("S7", "D7", "H7", "C7", "C2");
-	private static Hand straightFlush = new Hand("D8", "D9", "D10", "DJ", "DQ");
-	private static Hand royalFlush = new Hand("HA", "HK", "HQ", "HJ", "H10");	
+	static Hand pair = new Hand("SQ", "HQ", "C4", "C7", "D3");
+	static Hand twoPair = new Hand("D2", "S2", "C6", "D6", "HK");
+	static Hand threeOfKind = new Hand("D10", "C10", "H10", "C2", "D5");
+	static Hand straight = new Hand("D3", "C4", "H5", "H6", "H7");
+	static Hand flush = new Hand("DK", "DJ", "D9", "D4", "D6");
+	static Hand fullHouse = new Hand("S4", "C4", "H4", "HJ", "CJ");
+	static Hand fourOfKind = new Hand("S7", "D7", "H7", "C7", "C2");
+	static Hand straightFlush = new Hand("D8", "D9", "D10", "DJ", "DQ");
+	static Hand royalFlush = new Hand("HA", "HK", "HQ", "HJ", "H10");	
 
 	public void testEquality() {
 		Hand h1 = new Hand("SA", "S2", "S3", "S4", "S5");
