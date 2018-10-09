@@ -16,7 +16,7 @@ public class Hand implements Comparable<Hand> {
 	private static final int ONE_PAIR       = 1000000;
 
 	private List<Card> cards;
-	public String handName;
+	public String      handName;
 
 	public Hand(String... rankSuit) {
 		this(Arrays.asList(rankSuit));
@@ -28,13 +28,9 @@ public class Hand implements Comparable<Hand> {
 		if (new HashSet<String>(rankSuit).size() != 5)
 			throw new IllegalArgumentException();
 
+		handName = "Not Calculated Yet";
 		cards = rankSuit.stream().map(rs -> new Card(rs)).collect(Collectors.toList());
 		Collections.sort(cards);
-	}
-
-	public Hand copyHand() {
-		List<String> rs = cards.stream().map(c -> c.toString()).collect(Collectors.toList());
-		return new Hand(rs);
 	}
 
 	public List<Card> getCards() {
@@ -56,6 +52,11 @@ public class Hand implements Comparable<Hand> {
 		return cards.stream().map(Card::toString).collect(Collectors.joining(" "));
 	}
 
+	private Hand copyHand() {
+		List<String> rs = cards.stream().map(c -> c.toString()).collect(Collectors.toList());
+		return new Hand(rs);
+	}
+
 	private Map<Rank, List<Card>> rMap() {
 		return cards.stream().collect(Collectors.groupingBy(Card::getRank));
 	}
@@ -64,6 +65,7 @@ public class Hand implements Comparable<Hand> {
 		return cards.stream().collect(Collectors.groupingBy(Card::getSuit));
 	}
 
+	/*   */
 	private boolean hasRankN(int n) {
 		return !rMap().values().stream().filter(l -> l.size() == n).collect(Collectors.toSet()).isEmpty();
 	}
@@ -84,11 +86,11 @@ public class Hand implements Comparable<Hand> {
 		return hasSuitN(5);
 	}
 
-	public Optional<Suit> isFlushSuitN(int n) {
+	private Optional<Suit> isFlushSuitN(int n) {
 		return sMap().entrySet().stream().filter(e -> e.getValue().size() == 5 - n).map(Entry::getKey).findFirst();
 	}
 
-	public Optional<List<Card>> isAwayFlushN(int n) {
+	private Optional<List<Card>> isAwayFlushN(int n) {
 		Optional<Suit> s = isFlushSuitN(n);
 		if (!s.isPresent())
 			return Optional.empty();
@@ -217,7 +219,7 @@ public class Hand implements Comparable<Hand> {
 
 		if (flush && straight) {
 			Card hiCard = getHighCard();
-			handName = hiCard.getRank() == Rank.Ace ? "Royal Flush": "Straigh Flush";
+			handName = hiCard.getRank() == Rank.Ace ? "Royal Flush" : "Straigh Flush";
 			return STRAIGHT_FLUSH + getHighCard().value();
 		} else if (hasFourOfKind()) {
 			Card top = cards.get(4);
@@ -273,6 +275,8 @@ public class Hand implements Comparable<Hand> {
 
 	// Returns a list of cards to remove from the players hand
 	public List<Card> exchange() {
+		Optional<List<Card>> royal1 = is1AwayRoyalFlush();
+		Optional<List<Card>> straightFlush1 = is1AwayStraightFlush();
 		Optional<List<Card>> flush1 = isAwayFlushN(1);
 		Optional<List<Card>> straight1 = is1AwayStraight();
 		Optional<List<Card>> flush2 = isAwayFlushN(2);
@@ -280,7 +284,11 @@ public class Hand implements Comparable<Hand> {
 
 		if (scoreHand() >= STRAIGHT) {
 			return Collections.emptyList();
-		} else if (flush1.isPresent()) {
+		} else if (royal1.isPresent()) {
+			return royal1.get();
+		}  else if (straightFlush1.isPresent()) {
+			return straightFlush1.get();
+		}  else if (flush1.isPresent()) {
 			return flush1.get();
 		} else if (straight1.isPresent()) {
 			return straight1.get();
@@ -305,18 +313,18 @@ public class Hand implements Comparable<Hand> {
 		return rMap().values().stream().filter(l -> l.size() != 3).flatMap(List::stream).collect(Collectors.toList());
 	}
 
-	public List<Card> is1AwayStraightFlush() {
+	public Optional<List<Card>> is1AwayStraightFlush() {
 		Optional<List<Card>> straight = is1AwayStraight();
 		Optional<List<Card>> flush = isAwayFlushN(1);
 
 		if (straight.isPresent() && flush.isPresent() && straight.get().size() == 1
 				&& straight.get().equals(flush.get()))
-			return straight.get();
+			return straight;
 
-		return Collections.emptyList();
+		return Optional.empty();
 	}
 
-	public List<Card> is1AwayRoyalFlush() {
+	public Optional<List<Card>> is1AwayRoyalFlush() {
 		return is1AwayStraightFlush();
 	}
 }
