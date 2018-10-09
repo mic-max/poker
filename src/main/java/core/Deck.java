@@ -1,12 +1,6 @@
 package core;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-public class Deck {
-
-	private List<Card> cards;
+public final class Deck {
 	
 	public static final Card CA = new Card("CA");
 	public static final Card C2 = new Card("C2");
@@ -63,45 +57,4 @@ public class Deck {
 	public static final Card SJ = new Card("SJ");
 	public static final Card SQ = new Card("SQ");
 	public static final Card SK = new Card("SK");
-	
-	public Deck() {
-		cards = new ArrayList<>(52);
-		for (Rank r : Rank.values()) {
-			for (Suit s : Suit.values())
-				cards.add(new Card(s, r));
-		}
-		Collections.shuffle(cards);
-	}
-	
-	public Card dealCard() {
-		return cards.remove(cards.size() - 1);
-	}
-	
-	public Card returnCard(Card card) {
-		Card newCard = dealCard();
-		cards.add(card);
-		return newCard;
-	}
-	
-	public List<Card> getCards() {
-		return cards;
-	}
-	
-	public int size() {
-		return cards.size();
-	}
-
-	public List<Card> deal(int size) {
-		if (size == 0) Collections.emptyList();
-		
-		List<Card> rem = new ArrayList<>();
-		for (int i = 0; i < size; i++)
-			rem.add(cards.get(i));
-		remove(rem);
-		return rem;
-	}
-
-	public void remove(List<Card> dealtCards) {
-		cards.removeAll(dealtCards);
-	}
 }

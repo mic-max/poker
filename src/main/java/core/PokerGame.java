@@ -28,16 +28,14 @@ public class PokerGame {
 		
 		Hand ops = new Hand(cards.subList(0, 5));
 		Hand aip = new Hand(cards.subList(5, 10));
-
-		Deck deck = new Deck();
-		deck.remove(ops.getCards());
-		deck.remove(aip.getCards());
+		List<Card> deck = cards.subList(10, cards.size()).stream()
+			.map(Card::new)
+			.collect(Collectors.toList());
 		
 		System.out.println("Hand to beat: " + ops);
 		System.out.println("AIP Hand    : " + aip);
 		List<Card> discard = aip.exchange();
-		List<Card> pickup = deck.deal(discard.size());
-		
+		List<Card> pickup = deck.subList(0, discard.size());
 		
 		if (discard.size() == 0) {
 			System.out.println("AIP Discards: Nothing");
