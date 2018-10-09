@@ -16,6 +16,7 @@ public class Hand implements Comparable<Hand> {
 	private static final int ONE_PAIR       = 1000000;
 
 	private List<Card> cards;
+	public String handName;
 
 	public Hand(String... rankSuit) {
 		this(Arrays.asList(rankSuit));
@@ -215,37 +216,47 @@ public class Hand implements Comparable<Hand> {
 		boolean straight = isStraight();
 
 		if (flush && straight) {
+			Card hiCard = getHighCard();
+			handName = hiCard.getRank() == Rank.Ace ? "Royal Flush": "Straigh Flush";
 			return STRAIGHT_FLUSH + getHighCard().value();
 		} else if (hasFourOfKind()) {
 			Card top = cards.get(4);
 			if (cards.get(0).getRank() == cards.get(3).getRank())
 				top = cards.get(0);
+			handName = "Four of a Kind";
 			return FOUR_OF_A_KIND + top.value();
 		} else if (isFullHouse()) {
+			handName = "Full House";
 			return FULL_HOUSE + cards.get(2).value();
 		} else if (flush) {
 			int score = cards.get(0).getSuit().getValue();
 			// TODO refactor this
 			for (int i = 4; i >= 0; i--)
 				score += cards.get(i).getRank().getValue() * Rank.Ace.getValue() * (i + 2);
+			handName = "Flush";
 			return FLUSH + score;
 		} else if (straight) {
+			handName = "Straight";
 			return STRAIGHT + getHighCard().value();
 		} else if (hasSet()) {
+			handName = "Set";
 			return SET + cards.get(2).value();
 		} else if (hasTwoPairs()) {
 			Card top = cards.get(4);
 			if (top.getRank() != cards.get(3).getRank())
 				top = cards.get(3);
+			handName = "Two Pairs";
 			return TWO_PAIRS + top.value();
 		} else if (hasPair()) {
 			Card top = cards.get(4);
 
 			for (int i = 3; top.getRank() != cards.get(i).getRank(); i--)
 				top = cards.get(i);
+			handName = "Pair";
 			return ONE_PAIR + top.value();
 		}
 
+		handName = "High Card";
 		return getHighCard().value();
 	}
 
