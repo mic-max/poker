@@ -5,17 +5,17 @@ import junit.framework.TestCase;
 
 public class HandTest extends TestCase {
 
-	static Hand nothing = new Hand("D2", "C4", "H6", "S8", "CQ"); // high queen
+	static Hand nothing = new Hand("D2", "C4", "H6", "S8", "CQ");
 
-	static Hand pair = new Hand("SQ", "HQ", "C4", "C7", "D3");
-	static Hand twoPair = new Hand("D2", "S2", "C6", "D6", "HK");
-	static Hand threeOfKind = new Hand("D10", "C10", "H10", "C2", "D5");
-	static Hand straight = new Hand("D3", "C4", "H5", "H6", "H7");
-	static Hand flush = new Hand("DK", "DJ", "D9", "D4", "D6");
-	static Hand fullHouse = new Hand("S4", "C4", "H4", "HJ", "CJ");
-	static Hand fourOfKind = new Hand("S7", "D7", "H7", "C7", "C2");
+	static Hand pair          = new Hand("SQ", "HQ", "C4", "C7", "D3");
+	static Hand twoPair       = new Hand("D2", "S2", "C6", "D6", "HK");
+	static Hand threeOfKind   = new Hand("D10", "C10", "H10", "C2", "D5");
+	static Hand straight      = new Hand("D3", "C4", "H5", "H6", "H7");
+	static Hand flush         = new Hand("DK", "DJ", "D9", "D4", "D6");
+	static Hand fullHouse     = new Hand("S4", "C4", "H4", "HJ", "CJ");
+	static Hand fourOfKind    = new Hand("S7", "D7", "H7", "C7", "C2");
 	static Hand straightFlush = new Hand("D8", "D9", "D10", "DJ", "DQ");
-	static Hand royalFlush = new Hand("HA", "HK", "HQ", "HJ", "H10");
+	static Hand royalFlush    = new Hand("HA", "HK", "HQ", "HJ", "H10");
 
 	public void testEquality() {
 		Hand h1 = new Hand("SA", "S2", "S3", "S4", "S5");
@@ -29,7 +29,7 @@ public class HandTest extends TestCase {
 	}
 
 	public void testSinglePair() {
-		Hand h1 = new Hand("SA", "HA", "C2", "C3", "C4"); // pair aces
+		Hand h1 = new Hand("SA", "HA", "C2", "C3", "C4");
 
 		assertTrue(h1.hasPair());
 		assertFalse(nothing.hasPair());
@@ -45,7 +45,7 @@ public class HandTest extends TestCase {
 	}
 
 	public void testSet() {
-		Hand h1 = new Hand("S5", "D5", "H5", "C6", "C9"); // triple 5
+		Hand h1 = new Hand("S5", "D5", "H5", "C6", "C9");
 
 		assertTrue(h1.hasSet());
 		assertFalse(nothing.hasSet());
@@ -165,7 +165,7 @@ public class HandTest extends TestCase {
 	}
 
 	public void testHighCard() {
-		Hand h1 = new Hand("SA", "HA", "C2", "C3", "C4"); // pair aces
+		Hand h1 = new Hand("SA", "HA", "C2", "C3", "C4");
 		Hand h2 = new Hand("SA", "C2", "H3", "S4", "D5");
 
 		assertEquals(new Card("CQ"), nothing.getHighCard());
@@ -184,4 +184,5 @@ public class HandTest extends TestCase {
 		assertTrue(straightFlush.compareTo(royalFlush) < 0);
 		assertTrue(royalFlush.compareTo(nothing) > 0);
 	}
+
 }
