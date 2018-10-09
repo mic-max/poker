@@ -140,6 +140,28 @@ public class HandTest extends TestCase {
 		assertTrue(thrown);
 	}
 	
+	public void testHandMustBeFiveCards() {
+		boolean thrown = false;
+		try {
+			new Hand("C4", "H2", "D9");
+		} catch (IllegalArgumentException e) {
+			thrown = true;
+		}
+		
+		assertTrue(thrown);
+	}
+	
+	public void testHandMustBeUnique() {
+		boolean thrown = false;
+		try {
+			new Hand("C4", "H2", "D9", "DA", "DA");
+		} catch (IllegalArgumentException e) {
+			thrown = true;
+		}
+		
+		assertTrue(thrown);
+	}
+	
 	public void testHighCard() {
 		Hand h1 = new Hand("SA", "HA", "C2", "C3", "C4"); // pair aces
 		Hand h2 = new Hand("SA", "C2", "H3", "S4", "D5");
