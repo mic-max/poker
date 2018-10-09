@@ -82,7 +82,7 @@ public class HandCompareSameTest extends TestCase {
 		Hand rfSpade = new Hand("SA", "SK", "SQ", "SJ", "S10");
 		Hand rfClub = new Hand("CA", "CK", "CQ", "CJ", "C10");
 		Hand rfDiamond = new Hand("DA", "DK", "DQ", "DJ", "D10");
-		
+
 		assertTrue(rfSpade.compareTo(HandTest.royalFlush) > 0);
 		assertTrue(HandTest.royalFlush.compareTo(rfDiamond) > 0);
 		assertTrue(rfDiamond.compareTo(rfClub) > 0);
