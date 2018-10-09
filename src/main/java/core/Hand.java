@@ -96,7 +96,7 @@ public class Hand implements Comparable<Hand> {
 			return Collections.emptyList(); 
 		
 		return cards.stream()
-			.filter(c -> c.getSuit() == s.get())
+			.filter(c -> c.getSuit() != s.get())
 			.collect(Collectors.toList());
 	}
 
@@ -249,6 +249,8 @@ public class Hand implements Comparable<Hand> {
 	public List<Card> exchange() {
 		if (scoreHand() >= STRAIGHT) {
 			return Collections.emptyList();
+		} else if (!is1AwayFlush().isEmpty()){
+			return is1AwayFlush();
 		} else {
 			return Arrays.asList(cards.get(3), cards.get(4)); // keep top 2 cards
 		}
