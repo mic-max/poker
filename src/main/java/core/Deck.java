@@ -90,4 +90,18 @@ public class Deck {
 	public int size() {
 		return cards.size();
 	}
+
+	public List<Card> deal(int size) {
+		if (size == 0) Collections.emptyList();
+		
+		List<Card> rem = new ArrayList<>();
+		for (int i = 0; i < size; i++)
+			rem.add(cards.get(i));
+		remove(rem);
+		return rem;
+	}
+
+	public void remove(List<Card> dealtCards) {
+		cards.removeAll(dealtCards);
+	}
 }

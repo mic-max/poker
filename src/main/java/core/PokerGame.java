@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PokerGame {
-	
-	static Hand ops, aip;
-	
+
 	private static List<String> loadInputs(String filename) {
 		List<String> lines = new ArrayList<>();
 		
@@ -28,10 +26,30 @@ public class PokerGame {
 	private static void processLine(String s) {
 		List<String> cards = Arrays.asList(s.split(" "));
 		
-		ops = new Hand(cards.subList(0, 5).toArray(new String[5]));
-		aip = new Hand(cards.subList(5, 10).toArray(new String[5]));
+		Hand ops = new Hand(cards.get(0), cards.get(1), cards.get(2), cards.get(3), cards.get(4));
+		Hand aip = new Hand(cards.get(5), cards.get(6), cards.get(7), cards.get(8), cards.get(9));
+
+		Deck deck = new Deck();
+		deck.remove(ops.getCards());
+		deck.remove(aip.getCards());
 		
-		aip.exchange();
+		System.out.println("Hand to beat: " + ops);
+		System.out.println("AIP Hand    : " + aip);
+		List<Card> discard = aip.exchange();
+		List<Card> pickup = deck.deal(discard.size());
+		
+		
+		if (discard.size() == 0) {
+			System.out.println("AIP Discards: Nothing");
+		} else {			
+			System.out.println("AIP Discards: " + discard + " --> " + pickup);
+		}
+		
+		aip.swap(discard, pickup);
+		boolean aipwin = aip.compareTo(ops) > 0;
+		
+		System.out.println("Winner is   : " + (aipwin ? "AIP" : "Opponent"));
+		System.out.println("--------------------------------");
 	}
 
 	public static void main(String[] args) {
@@ -43,14 +61,5 @@ public class PokerGame {
 		for (String line: lines) {
 			processLine(line);
 		}
-		
-		String discard = "todo";
-		String pickup  = "todo";
-		boolean aipwin = false;
-		
-		System.out.println("Hand to beat: " + ops);
-		System.out.println("AIP Hand    : " + aip);
-		System.out.println("AIP Discards: " + discard + " --> " + pickup);
-		System.out.println("Winner is   : " + (aipwin ? "AIP" : "opponent"));
 	}
 }
