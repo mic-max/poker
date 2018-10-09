@@ -284,8 +284,6 @@ public class Hand implements Comparable<Hand> {
 	}
 
 	public List<Card> is1AwayStraightFlush() {
-		// must be 1 away from both
-		// that card must be the same
 		List<Card> straight = is1AwayStraight();
 		List<Card> flush = isAwayFlushN(1);
 		
@@ -295,10 +293,7 @@ public class Hand implements Comparable<Hand> {
 		return Collections.emptyList();
 	}
 
-	public Optional<Card> is1AwayRoyalFlush() {
-		// 1 away from a straight and that card is the wrong suit too
-		// have a flush, 1 away from straight
-		// have a straight, one suit is incorrect
-		return Optional.empty();
+	public List<Card> is1AwayRoyalFlush() {
+		return is1AwayStraightFlush();
 	}
 }

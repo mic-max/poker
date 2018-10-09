@@ -26,8 +26,8 @@ public class PokerGame {
 	private static void processLine(String s) {
 		List<String> cards = Arrays.asList(s.split(" "));
 		
-		Hand ops = new Hand(cards.get(0), cards.get(1), cards.get(2), cards.get(3), cards.get(4));
-		Hand aip = new Hand(cards.get(5), cards.get(6), cards.get(7), cards.get(8), cards.get(9));
+		Hand ops = new Hand(cards.subList(0, 5));
+		Hand aip = new Hand(cards.subList(5, 10));
 
 		Deck deck = new Deck();
 		deck.remove(ops.getCards());
