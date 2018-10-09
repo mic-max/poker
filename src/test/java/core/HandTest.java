@@ -1,5 +1,6 @@
 package core;
 
+import java.util.*;
 import junit.framework.TestCase;
 
 public class HandTest extends TestCase {
@@ -95,6 +96,48 @@ public class HandTest extends TestCase {
 		
 		assertTrue(h1.isStraightFlush());
 		assertFalse(nothing.isStraightFlush());
+	}
+	
+	public void testSwapCards() {
+		Hand h = new Hand("C2", "H7", "SQ", "SJ", "H10");
+		List<Card> d = Arrays.asList(Deck.C2, Deck.H7);
+		List<Card> a = Arrays.asList(Deck.SA, Deck.SK);
+		
+		h.swap(d, a);
+		
+		List<Card> cards = h.getCards();
+		assertEquals(5, cards.size());
+		assertTrue(cards.containsAll(Arrays.asList(Deck.SA, Deck.SK, Deck.SQ, Deck.SJ, Deck.H10)));
+		assertFalse(cards.contains(Deck.C2));
+		assertFalse(cards.contains(Deck.H7));
+	}
+	
+	public void testSwapCardsDiffSize() {
+		boolean thrown = false;
+		Hand h = new Hand("C2", "H7", "SQ", "SJ", "H10");
+		List<Card> d = Arrays.asList(Deck.C2, Deck.H7);
+		List<Card> a = Arrays.asList(Deck.SA);
+
+		try {
+			h.swap(d, a);
+		} catch (IllegalArgumentException e) {
+			thrown = true;
+		}
+		
+		assertTrue(thrown);
+	}
+
+	public void testCompareHandsWithSameCard() {
+		boolean thrown = false;
+		Hand h1 = new Hand("S2", "C4", "CK", "S5", "D8");
+		Hand h2 = new Hand("S3", "C9", "CQ", "S5", "D10");
+		try {
+			h1.compareTo(h2);			
+		} catch (IllegalStateException e) {
+			thrown = true;
+		}
+		
+		assertTrue(thrown);
 	}
 	
 	public void testHighCard() {

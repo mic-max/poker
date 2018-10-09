@@ -1,8 +1,6 @@
 package core;
 
 import java.util.List;
-import java.util.Optional;
-
 import junit.framework.TestCase;
 
 public class AipExchangeTest extends TestCase {
@@ -182,16 +180,4 @@ public class AipExchangeTest extends TestCase {
 		assertTrue(ex.contains(Deck.C4));
 		assertTrue(ex.contains(Deck.H6));
 	}
-	
-//	public void test1AwayFullHouse() {
-//		List<Card> ex2 = HandTest.twoPair.exchange();
-//		List<Card> ex3 = HandTest.threeOfKind.exchange();
-//		// TODO test for what card gets exchanged when already has a set, lowest card or doesn't matter?
-//
-//		assertEquals(1, ex2.size());
-//		assertTrue(ex2.contains(Deck.HK));
-//		
-//		assertEquals(1, ex3.size());
-//		assertTrue(ex3.contains(Deck.C2) || ex3.contains(Deck.D5));
-//	}
 }
