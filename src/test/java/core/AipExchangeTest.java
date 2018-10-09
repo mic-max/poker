@@ -21,4 +21,12 @@ public class AipExchangeTest extends TestCase {
 		assertTrue(sfExchange.isEmpty());
 		assertTrue(rfExchange.isEmpty());
 	}
+	
+	public void test1AwayFlush() {
+		Hand flush1Away = new Hand("D5", "D6", "D10", "C5", "DA");
+		List<Card> ex1 = flush1Away.exchange();
+
+		assertEquals(1, ex1.size());
+		assertTrue(ex1.contains(new Card("C5")));
+	}
 }
