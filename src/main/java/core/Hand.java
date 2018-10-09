@@ -244,27 +244,6 @@ public class Hand implements Comparable<Hand> {
 
 		if (k >= STRAIGHT) {
 			return Collections.emptyList();
-//		} else if (is1AwayRoyalFlush().isPresent()) {
-//			return Collections.emptyList(); // todo
-//		} else if (is1AwayStraightFlush().isPresent()) {
-//			return Collections.emptyList(); // todo
-//		} else if (is1AwayFullHouse().isPresent()) {
-//			return Collections.emptyList(); // todo
-		} else if (isNAwayFlush(1).isPresent()) {
-			Suit s = isNAwayFlush(1).get();
-			return cards.stream().filter(c -> c.getSuit() != s).collect(Collectors.toList());
-		} else if (is1AwayStraight().isPresent()) {
-			return is1AwayStraight().get();
-		} else if (isNAwayFlush(2).isPresent()) {
-			Suit s = isNAwayFlush(2).get();
-			return cards.stream().filter(c -> c.getSuit() != s).collect(Collectors.toList());
-		} else if (hasTriple()) {
-			Rank r = cards.get(2).getRank();
-			return cards.stream().filter(c -> c.getRank() != r).collect(Collectors.toList());
-		} else if (is2AwayStraight().isPresent()) {
-			return Collections.emptyList(); // todo
-		} else if (hasPair()) {
-			return Collections.emptyList(); // todo
 		} else {
 			return Arrays.asList(cards.get(3), cards.get(4)); // keep top 2 cards
 		}
