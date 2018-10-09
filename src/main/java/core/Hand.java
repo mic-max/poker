@@ -1,6 +1,7 @@
 package core;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.stream.*;
 
 public class Hand implements Comparable<Hand> {
@@ -31,8 +32,7 @@ public class Hand implements Comparable<Hand> {
 	}
 
 	public Hand copyHand() {
-		List<String> rs = new ArrayList<>();
-		cards.stream().map(c -> rs.add(c.toString()));
+		List<String> rs  = cards.stream().map(c -> c.toString()).collect(Collectors.toList());
 		return new Hand(rs);
 	}
 
@@ -78,8 +78,9 @@ public class Hand implements Comparable<Hand> {
 	}
 	
 	private boolean hasSuitN(int n) {
-		return !sMap().values().stream().filter(l -> l.size() == n).collect(Collectors.toSet()).isEmpty();
-//		return sMap().containsValue(n);
+		return !sMap().values().stream()
+			.filter(l -> l.size() == n)
+			.collect(Collectors.toSet()).isEmpty();
 	}
 	
 	public boolean isFlush() {
@@ -87,7 +88,9 @@ public class Hand implements Comparable<Hand> {
 	}
 	
 	public Optional<Suit> isFlushSuitN(int n) {
-		return sMap().entrySet().stream().filter(e -> e.getValue().size() == 5 - n).map(Map.Entry::getKey).findFirst();
+		return sMap().entrySet().stream()
+			.filter(e -> e.getValue().size() == 5 - n)
+			.map(Entry::getKey).findFirst();
 	}
 	
 	// TODO consider switching to Optional<List<Card>>
@@ -106,14 +109,14 @@ public class Hand implements Comparable<Hand> {
 		if (isStraight())
 			return Collections.emptyList();
 		
-		Hand h = copyHand();
 
-		for (int i = 0; i < cards.size(); i++) {
+		for (Card c : getCards()) {
 			for (Rank r : Rank.values()) {
-				Card old = h.swap(i, new Card(Suit.Spade, r));
+				Hand h = copyHand();
+				h.swap(c, new Card(Suit.Spade, r));
 
-				if (isFlush())
-					return Collections.singletonList(old);
+				if (h.isStraight())
+					return Collections.singletonList(c);
 			}
 		}
 
@@ -124,19 +127,17 @@ public class Hand implements Comparable<Hand> {
 		cards.add(c);
 	}
 
-	private Card removeCard(int index) {
-		return cards.remove(index);
+	private void removeCard(Card c) {
+		cards.remove(c);
 	}
 
 	// take an array of indices, sort in descinding order so index of cards to
 	// rmeove doesnt change
-	private Card swap(int i, Card card) {
-		Card ret = removeCard(i);
-		addCard(card);
+	private void swap(Card rem, Card add) {
+		removeCard(rem);
+		addCard(add);
 
 		Collections.sort(cards);
-
-		return ret;
 	}
 
 	public void swap(List<Card> remove, List<Card> add) {
@@ -144,7 +145,7 @@ public class Hand implements Comparable<Hand> {
 			throw new IllegalArgumentException();
 
 		for (Card r : remove)
-			removeCard(cards.indexOf(r));
+			removeCard(r);
 
 		for (Card a : add)
 			addCard(a);
@@ -160,6 +161,10 @@ public class Hand implements Comparable<Hand> {
 	}
 
 	public boolean isStraight() {
+		Optional<List<Card>> u = rMap().values().stream().filter(l -> l.size() > 1).findAny();
+		if (u.isPresent())
+			return false;
+		
 		boolean hasAce = cards.get(4).getRank() == Rank.Ace;
 		Rank topCardRank = cards.get(hasAce ? 3 : 4).getRank();
 		Rank lowCardRank = cards.get(0).getRank();
@@ -254,6 +259,8 @@ public class Hand implements Comparable<Hand> {
 //			return is1AwayFullHouse();
 		} else if (!isAwayFlushN(1).isEmpty()) {
 			return isAwayFlushN(1);
+		} else if (!is1AwayStraight().isEmpty()) {
+			return is1AwayStraight();
 		} else if (!isAwayFlushN(2).isEmpty()) {
 			return isAwayFlushN(2);
 		} else if (hasSet()) {
