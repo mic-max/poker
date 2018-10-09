@@ -254,9 +254,15 @@ public class Hand implements Comparable<Hand> {
 			return isAwayFlushN(1);
 		} else if (!isAwayFlushN(2).isEmpty()) {
 			return isAwayFlushN(2);
+		} else if (hasSet()) {
+			return is1AwayFourOfKind();
 		} else {
 			return Arrays.asList(cards.get(3), cards.get(4)); // keep top 2 cards
 		}
+	}
+
+	private List<Card> is1AwayFourOfKind() {
+		return rMap().values().stream().filter(l -> l.size() != 3).flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	public List<Card> is1AwayStraightFlush() {
