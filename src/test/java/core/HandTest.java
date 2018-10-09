@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 public class HandTest extends TestCase {
 	
-	private static Hand nothing = new Hand("D2", "C4", "H6", "S8", "CQ"); // high queen
+	static Hand nothing = new Hand("D2", "C4", "H6", "S8", "CQ"); // high queen
 
 	static Hand pair = new Hand("SQ", "HQ", "C4", "C7", "D3");
 	static Hand twoPair = new Hand("D2", "S2", "C6", "D6", "HK");

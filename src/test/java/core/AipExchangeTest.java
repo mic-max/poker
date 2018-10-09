@@ -41,9 +41,18 @@ public class AipExchangeTest extends TestCase {
 	
 	public void test1AwayFourOfKind() {
 		List<Card> ex = HandTest.threeOfKind.exchange();
-		
+
 		assertEquals(2, ex.size());
 		assertTrue(ex.contains(new Card("C2")));
 		assertTrue(ex.contains(new Card("D5")));
+	}
+	
+	public void testNothingHandExchange() {
+		List<Card> ex = HandTest.nothing.exchange();
+
+		assertEquals(3, ex.size());
+		assertTrue(ex.contains(new Card("D2")));
+		assertTrue(ex.contains(new Card("C4")));
+		assertTrue(ex.contains(new Card("H6")));
 	}
 }
