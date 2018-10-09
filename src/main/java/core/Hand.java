@@ -159,6 +159,35 @@ public class Hand implements Comparable<Hand> {
 	public boolean hasPair() {
 		return rMap().values().stream().filter(l -> l.size()  == 2).collect(Collectors.toSet()).size() == 1;
 	}
+	
+	// Returns cards that are not part of the sequence of 3, empty list if there is none
+	public Optional<List<Card>> sequenceOf3() {
+		Set<Integer> rSet = rMap().keySet().stream()
+				.map(Rank::getValue)
+				.collect(Collectors.toSet());
+		
+		for (int r : rSet) {
+			if (r == Rank.Ace.getValue() && rSet.contains(Rank.Two.getValue()) && rSet.contains(Rank.Three.getValue())) {
+				List<Card> list = Stream.concat(
+					rMap().entrySet().stream()
+						.filter(e -> e.getKey().getValue() > Rank.Three.getValue() && e.getKey() != Rank.Ace)
+						.map(e -> e.getValue().get(0))
+					,
+					rMap().get(Rank.Ace).stream().skip(1)
+				).collect(Collectors.toList());
+				return Optional.of(list);
+			}
+			else if (rSet.contains(r + 1) && rSet.contains(r + 2)) {
+				List<Card> list = rMap().entrySet().stream()
+					.filter(e -> e.getKey().getValue() < r || e.getKey().getValue() > r + 2)
+					.map(e -> e.getValue().get(0))
+					.collect(Collectors.toList());
+				return Optional.of(list);
+			}
+		}
+		
+		return Optional.empty();
+	}
 
 	public boolean isStraight() {
 		Optional<List<Card>> u = rMap().values().stream().filter(l -> l.size() > 1).findAny();
@@ -253,6 +282,8 @@ public class Hand implements Comparable<Hand> {
 
 	// Returns a list of cards to remove from the players hand
 	public List<Card> exchange() {
+		Optional<List<Card>> seq3 = sequenceOf3();
+		
 		if (scoreHand() >= STRAIGHT) {
 			return Collections.emptyList();
 //		} else if (hasSet() || hasTwoPairs()) {
@@ -265,6 +296,8 @@ public class Hand implements Comparable<Hand> {
 			return isAwayFlushN(2);
 		} else if (hasSet()) {
 			return is1AwayFourOfKind();
+		} else if (seq3.isPresent()) {
+			return seq3.get();
 		} else if (hasTwoPairs() || hasPair()) {
 			return nonPairCards();
 		} else {
