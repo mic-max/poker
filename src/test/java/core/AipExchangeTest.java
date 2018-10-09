@@ -59,7 +59,6 @@ public class AipExchangeTest extends TestCase {
 	public void test1AwayStraight() {
 		Hand seq4x = new Hand("D4", "D5", "H6", "C7", "H10");
 		List<Card> e4x = seq4x.exchange();
-		System.out.println(e4x);
 		assertEquals(1, e4x.size());
 		assertTrue(e4x.contains(Deck.H10));
 		
@@ -71,17 +70,17 @@ public class AipExchangeTest extends TestCase {
 		Hand seq3x1 = new Hand("C4", "H5", "H6", "C8", "H10");
 		List<Card> e3x1 = seq3x1.exchange();
 		assertEquals(1, e3x1.size());
-		assertTrue(e3x1.contains(Deck.H10)); // or c4
+		assertTrue(e3x1.contains(Deck.H10) || e3x1.contains(Deck.C4));
 		
 		Hand seqx4 = new Hand("C4", "H5", "H6", "C8", "H9");
 		List<Card> ex4 = seqx4.exchange();
 		assertEquals(1, ex4.size());
-		assertTrue(ex4.contains(Deck.H9)); // or c4
+		assertTrue(ex4.contains(Deck.H9) || ex4.contains(Deck.C4));
 		
 		Hand seqPair = new Hand("C4", "H5", "H6", "C6", "H7");
 		List<Card> ePair = seqPair.exchange();
 		assertEquals(1, ePair.size());
-		assertTrue(ePair.contains(Deck.C6)); // or h6
+		assertTrue(ePair.contains(Deck.C6) || ePair.contains(Deck.H6));
 		
 		Hand seqLowA = new Hand("CA", "H2", "H3", "C4", "H10");
 		List<Card> eLowA = seqLowA.exchange();

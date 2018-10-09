@@ -75,9 +75,11 @@ public class HandTest extends TestCase {
 	public void testStraight() {
 		Hand h1 = new Hand("SA", "C2", "H3", "S4", "D5");
 		Hand h2 = new Hand("HA", "HK", "CQ", "S10", "DJ");
+		Hand h3 = new Hand("S3", "H5", "C6", "H6", "H7");
 		
 		assertTrue(h1.isStraight());
 		assertTrue(h2.isStraight());
+		assertFalse(h3.isStraight());
 		assertFalse(nothing.isStraight());
 	}
 	
