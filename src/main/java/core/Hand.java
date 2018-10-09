@@ -90,10 +90,11 @@ public class Hand implements Comparable<Hand> {
 		return sMap().entrySet().stream().filter(e -> e.getValue().size() == 5 - n).map(Map.Entry::getKey).findFirst();
 	}
 	
-	public List<Card> is1AwayFlush() {
-		Optional<Suit> s = isFlushSuitN(1);
+	// TODO consider switching to Optional<List<Card>>
+	public List<Card> isAwayFlushN(int n) {
+		Optional<Suit> s = isFlushSuitN(n);
 		if (!s.isPresent())
-			return Collections.emptyList(); 
+			return Collections.emptyList();
 		
 		return cards.stream()
 			.filter(c -> c.getSuit() != s.get())
@@ -249,8 +250,10 @@ public class Hand implements Comparable<Hand> {
 	public List<Card> exchange() {
 		if (scoreHand() >= STRAIGHT) {
 			return Collections.emptyList();
-		} else if (!is1AwayFlush().isEmpty()){
-			return is1AwayFlush();
+		} else if (!isAwayFlushN(1).isEmpty()) {
+			return isAwayFlushN(1);
+		} else if (!isAwayFlushN(2).isEmpty()) {
+			return isAwayFlushN(2);
 		} else {
 			return Arrays.asList(cards.get(3), cards.get(4)); // keep top 2 cards
 		}
@@ -260,7 +263,7 @@ public class Hand implements Comparable<Hand> {
 		// must be 1 away from both
 		// that card must be the same
 		List<Card> straight = is1AwayStraight();
-		List<Card> flush = is1AwayFlush();
+		List<Card> flush = isAwayFlushN(1);
 		
 		if (!straight.isEmpty() && !flush.isEmpty() && straight.size() == 1 && straight.equals(flush))
 			return straight;
