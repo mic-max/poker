@@ -108,6 +108,29 @@ public class AipExchangeTest extends TestCase {
 		assertTrue(e4.contains(Deck.HA));
 	}
 	
+	public void test1AwayStraightFlush() {
+		Hand oneAwaySF = new Hand("D8", "D9", "D10", "H5", "DQ");
+		List<Card> sfx = oneAwaySF.exchange();		
+		assertEquals(1, sfx.size());
+		assertTrue(sfx.contains(Deck.H5));
+		
+		List<Card> sf = HandTest.straightFlush.exchange();
+		assertEquals(0, sf.size());
+	}
+	
+	public void test1AwayRoyalFlush() {
+		Hand rf1Off = new Hand("HA", "HK", "HQ", "C4", "H10");
+		List<Card> ex = rf1Off.exchange();
+		assertEquals(1, ex.size());
+		assertTrue(ex.contains(Deck.C4));
+		
+		// Should always try to get the HA instead of the also possible H9 for a straight flush vs. royal flush
+		Hand rf1 = new Hand("HK", "HQ", "HJ", "H10", "C8"); // TODO try with H8, but exchange method won't swap bc its already a flush 
+		List<Card> ex1 = rf1.exchange();
+		assertEquals(1, ex1.size());
+		assertTrue(ex1.contains(Deck.C8));
+	}
+	
 //	public void test1AwayFullHouse() {
 //		List<Card> ex2 = HandTest.twoPair.exchange();
 //		List<Card> ex3 = HandTest.threeOfKind.exchange();
