@@ -268,7 +268,7 @@ public class Hand implements Comparable<Hand> {
 		List<Card> common = new ArrayList<>(cards);
 		common.retainAll(h.getCards());
 
-		if (common.size() != 0)
+		if (!common.isEmpty())
 			throw new IllegalStateException("Cannot compare hands with the same card: " + common);
 
 		return scoreHand() - h.scoreHand();
