@@ -93,21 +93,20 @@ public class Hand implements Comparable<Hand> {
 			.map(Entry::getKey).findFirst();
 	}
 	
-	// TODO consider switching to Optional<List<Card>>
-	public List<Card> isAwayFlushN(int n) {
+	public Optional<List<Card>> isAwayFlushN(int n) {
 		Optional<Suit> s = isFlushSuitN(n);
 		if (!s.isPresent())
-			return Collections.emptyList();
+			return Optional.empty();
 		
-		return cards.stream()
+		return Optional.of(cards.stream()
 			.filter(c -> c.getSuit() != s.get())
-			.collect(Collectors.toList());
+			.collect(Collectors.toList()));
 	}
 
 	// Returns a list of cards that are preventing the straight
-	public List<Card> is1AwayStraight() {
+	public Optional<List<Card>> is1AwayStraight() {
 		if (isStraight())
-			return Collections.emptyList();
+			return Optional.empty();
 		
 
 		for (Card c : getCards()) {
@@ -116,11 +115,11 @@ public class Hand implements Comparable<Hand> {
 				h.swap(c, new Card(Suit.Spade, r));
 
 				if (h.isStraight())
-					return Collections.singletonList(c);
+					return Optional.of(Collections.singletonList(c));
 			}
 		}
 
-		return Collections.emptyList();
+		return Optional.empty();
 	}
 
 	private void addCard(Card c) {
@@ -131,8 +130,6 @@ public class Hand implements Comparable<Hand> {
 		cards.remove(c);
 	}
 
-	// take an array of indices, sort in descinding order so index of cards to
-	// rmeove doesnt change
 	private void swap(Card rem, Card add) {
 		removeCard(rem);
 		addCard(add);
@@ -153,9 +150,6 @@ public class Hand implements Comparable<Hand> {
 		Collections.sort(cards);
 	}
 
-	// make these return optionals? that if true have the cards associated with the
-	// hand?
-	// could return all pairs, then test can check for 0, 1 or 2
 	public boolean hasPair() {
 		return rMap().values().stream().filter(l -> l.size()  == 2).collect(Collectors.toSet()).size() == 1;
 	}
@@ -282,18 +276,19 @@ public class Hand implements Comparable<Hand> {
 
 	// Returns a list of cards to remove from the players hand
 	public List<Card> exchange() {
+		Optional<List<Card>> flush1 = isAwayFlushN(1);
+		Optional<List<Card>> straight1 = is1AwayStraight();
+		Optional<List<Card>> flush2 = isAwayFlushN(2);
 		Optional<List<Card>> seq3 = sequenceOf3();
 		
 		if (scoreHand() >= STRAIGHT) {
 			return Collections.emptyList();
-//		} else if (hasSet() || hasTwoPairs()) {
-//			return is1AwayFullHouse();
-		} else if (!isAwayFlushN(1).isEmpty()) {
-			return isAwayFlushN(1);
-		} else if (!is1AwayStraight().isEmpty()) {
-			return is1AwayStraight();
-		} else if (!isAwayFlushN(2).isEmpty()) {
-			return isAwayFlushN(2);
+		} else if (flush1.isPresent()) {
+			return flush1.get();
+		} else if (straight1.isPresent()) {
+			return straight1.get();
+		} else if (flush2.isPresent()) {
+			return flush2.get();
 		} else if (hasSet()) {
 			return is1AwayFourOfKind();
 		} else if (seq3.isPresent()) {
@@ -304,15 +299,6 @@ public class Hand implements Comparable<Hand> {
 			return Arrays.asList(cards.get(0), cards.get(1), cards.get(2));
 		}
 	}
-
-//	private List<Card> is1AwayFullHouse() {
-//		if (hasTwoPairs()) {
-//			return rMap().values().stream().filter(l -> l.size() != 2).flatMap(List::stream).collect(Collectors.toList());
-//		} else { // set (3 of a kind)
-//			// TODO refactor, make a judgement on which of the 2 cards to remove ?
-//			return Arrays.asList(rMap().values().stream().filter(l -> l.size() != 3).flatMap(List::stream).collect(Collectors.toList()).get(0));
-//		}
-//	}
 
 	private List<Card> nonPairCards() {
 		return rMap().values().stream()
@@ -329,11 +315,11 @@ public class Hand implements Comparable<Hand> {
 	}
 
 	public List<Card> is1AwayStraightFlush() {
-		List<Card> straight = is1AwayStraight();
-		List<Card> flush = isAwayFlushN(1);
+		Optional<List<Card>> straight = is1AwayStraight();
+		Optional<List<Card>> flush = isAwayFlushN(1);
 		
-		if (!straight.isEmpty() && !flush.isEmpty() && straight.size() == 1 && straight.equals(flush))
-			return straight;
+		if (straight.isPresent() && flush.isPresent() && straight.get().size() == 1 && straight.get().equals(flush.get()))
+			return straight.get();
 	
 		return Collections.emptyList();
 	}
