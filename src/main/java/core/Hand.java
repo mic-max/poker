@@ -1,14 +1,7 @@
 package core;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.*;
 
 public class Hand implements Comparable<Hand> {
 
@@ -22,29 +15,25 @@ public class Hand implements Comparable<Hand> {
 	private static final int ONE_PAIR       = 1000000;
 
 	private List<Card> cards;
-	private Map<Suit, Integer> suitMap;
-	private Map<Rank, Integer> rankMap;
-
+	
 	public Hand(String... rankSuit) {
-		if (rankSuit.length != 5)
+		this(Arrays.asList(rankSuit));
+	}
+
+	public Hand(List<String> rankSuit) {
+		if (rankSuit.size() != 5)
 			throw new IllegalArgumentException();
-		// check that all values in rankSuit are unique, else throw exception
-		cards = new ArrayList<>(5);
-		suitMap = new HashMap<>();
-		rankMap = new HashMap<>();
+		if (new HashSet<String>(rankSuit).size() != 5)
+			throw new IllegalArgumentException();
 
-		for (String rs : rankSuit) {
-			Card c = new Card(rs);
-			cards.add(c);
-
-			Suit s = c.getSuit();
-			Rank r = c.getRank();
-
-			suitMap.put(s, suitMap.containsKey(s) ? suitMap.get(s) + 1 : 1);
-			rankMap.put(r, rankMap.containsKey(r) ? rankMap.get(r) + 1 : 1);
-		}
-
+		cards = rankSuit.stream().map(rs -> new Card(rs)).collect(Collectors.toList());
 		Collections.sort(cards);
+	}
+
+	public Hand copyHand() {
+		List<String> rs = new ArrayList<>();
+		cards.stream().map(c -> rs.add(c.toString()));
+		return new Hand(rs);
 	}
 
 	public List<Card> getCards() {
@@ -65,59 +54,77 @@ public class Hand implements Comparable<Hand> {
 	public String toString() {
 		return cards.stream().map(Card::toString).collect(Collectors.joining(" "));
 	}
+	
+	private Map<Rank, List<Card>> rMap() {
+		return cards.stream()
+				.collect(Collectors.groupingBy(Card::getRank));
+	}
+	
+	private Map<Suit, List<Card>> sMap() {
+		return cards.stream()
+				.collect(Collectors.groupingBy(Card::getSuit));
+	}
 
-	public boolean hasTriple() {
-		return rankMap.containsValue(3);
+	private boolean hasRankN(int n) {
+		return !rMap().values().stream().filter(l -> l.size() == n).collect(Collectors.toSet()).isEmpty();
 	}
 
 	public boolean hasFourOfKind() {
-		return rankMap.containsValue(4);
+		return hasRankN(4);
 	}
-
+	
+	public boolean hasSet() {
+		return hasRankN(3);
+	}
+	
+	private boolean hasSuitN(int n) {
+		return !sMap().values().stream().filter(l -> l.size() == n).collect(Collectors.toSet()).isEmpty();
+//		return sMap().containsValue(n);
+	}
+	
 	public boolean isFlush() {
-		return suitMap.containsValue(5);
+		return hasSuitN(5);
 	}
-
-	// off should only realistically be 1-3d
-	public Optional<Suit> isNAwayFlush(int off) {
-		return suitMap.entrySet().stream().filter(entry -> entry.getValue() == (5 - off)).map(Entry::getKey).findAny();
+	
+	public Optional<Suit> isFlushSuitN(int n) {
+		return sMap().entrySet().stream().filter(e -> e.getValue().size() == 5 - n).map(Map.Entry::getKey).findFirst();
+	}
+	
+	public List<Card> is1AwayFlush() {
+		Optional<Suit> s = isFlushSuitN(1);
+		if (!s.isPresent())
+			return Collections.emptyList(); 
+		
+		return cards.stream()
+			.filter(c -> c.getSuit() == s.get())
+			.collect(Collectors.toList());
 	}
 
 	// Returns a list of cards that are preventing the straight
-	public Optional<List<Card>> is1AwayStraight() {
-		Hand h = new Hand(toString().split(" "));
-		// check if its already a flush ?
+	public List<Card> is1AwayStraight() {
+		if (isStraight())
+			return Collections.emptyList();
+		
+		Hand h = copyHand();
 
 		for (int i = 0; i < cards.size(); i++) {
 			for (Rank r : Rank.values()) {
 				Card old = h.swap(i, new Card(Suit.Spade, r));
 
 				if (isFlush())
-					return Optional.of(Collections.singletonList(old));
+					return Collections.singletonList(old);
 			}
 		}
 
-		return Optional.empty();
+		return Collections.emptyList();
 	}
 
 	private void addCard(Card c) {
 		cards.add(c);
-
-		Suit s = c.getSuit();
-		Rank r = c.getRank();
-		suitMap.put(s, suitMap.containsKey(s) ? suitMap.get(s) + 1 : 1);
-		rankMap.put(r, rankMap.containsKey(r) ? rankMap.get(r) + 1 : 1);
 	}
 
 	private Card removeCard(int index) {
-		Card ret = cards.remove(index);
-
-		// if value == 1, remove from map
-
-		rankMap.put(ret.getRank(), rankMap.get(ret.getRank()) - 1);
-		suitMap.put(ret.getSuit(), suitMap.get(ret.getSuit()) - 1);
-
-		return ret;
+		return cards.remove(index);
 	}
 
 	// take an array of indices, sort in descinding order so index of cards to
@@ -132,8 +139,8 @@ public class Hand implements Comparable<Hand> {
 	}
 
 	public void swap(List<Card> remove, List<Card> add) {
-//		if (remove.size() != add.size())
-//			throw new IllegalArgumentException();
+		if (remove.size() != add.size())
+			throw new IllegalArgumentException();
 
 		for (Card r : remove)
 			removeCard(cards.indexOf(r));
@@ -148,7 +155,7 @@ public class Hand implements Comparable<Hand> {
 	// hand?
 	// could return all pairs, then test can check for 0, 1 or 2
 	public boolean hasPair() {
-		return Collections.frequency(rankMap.values(), 2) == 1;
+		return rMap().values().stream().filter(l -> l.size()  == 2).collect(Collectors.toSet()).size() == 1;
 	}
 
 	public boolean isStraight() {
@@ -165,11 +172,11 @@ public class Hand implements Comparable<Hand> {
 	}
 
 	public boolean isFullHouse() {
-		return rankMap.containsValue(2) && rankMap.containsValue(3);
+		return hasRankN(2) && hasRankN(3);
 	}
 
 	public boolean hasTwoPairs() {
-		return Collections.frequency(rankMap.values(), 2) == 2;
+		return rMap().values().stream().filter(l -> l.size()  == 2).collect(Collectors.toSet()).size() == 2;
 	}
 
 	public boolean isRoyalFlush() {
@@ -209,7 +216,7 @@ public class Hand implements Comparable<Hand> {
 			return FLUSH + score;
 		} else if (straight) {
 			return STRAIGHT + getHighCard().value();
-		} else if (hasTriple()) {
+		} else if (hasSet()) {
 			return SET + cards.get(2).value();
 		} else if (hasTwoPairs()) {
 			Card top = cards.get(4);
@@ -240,35 +247,23 @@ public class Hand implements Comparable<Hand> {
 
 	// Returns a list of cards to remove from the players hand
 	public List<Card> exchange() {
-		int k = scoreHand();
-
-		if (k >= STRAIGHT) {
+		if (scoreHand() >= STRAIGHT) {
 			return Collections.emptyList();
 		} else {
 			return Arrays.asList(cards.get(3), cards.get(4)); // keep top 2 cards
 		}
 	}
 
-	public Optional<Suit> is2AwayStraight() {
-		return Optional.empty();
-	}
-
-	public Optional<Card> is1AwayFullHouse() {
-		// get the 2 pair cards, filter those out return other card
-		return Optional.empty();
-	}
-
-	public Optional<Card> is1AwayStraightFlush() {
-		boolean flush = isFlush();
-		boolean straight = isStraight();
-
-		if (flush) {
-
-		} else if (straight) {
-
-		}
-
-		return Optional.empty();
+	public List<Card> is1AwayStraightFlush() {
+		// must be 1 away from both
+		// that card must be the same
+		List<Card> straight = is1AwayStraight();
+		List<Card> flush = is1AwayFlush();
+		
+		if (!straight.isEmpty() && !flush.isEmpty() && straight.size() == 1 && straight.equals(flush))
+			return straight;
+	
+		return Collections.emptyList();
 	}
 
 	public Optional<Card> is1AwayRoyalFlush() {

@@ -1,7 +1,5 @@
 package core;
 
-import java.util.List;
-
 import junit.framework.TestCase;
 
 public class HandTest extends TestCase {
@@ -46,8 +44,8 @@ public class HandTest extends TestCase {
 	public void testSet() {
 		Hand h1 = new Hand("S5", "D5", "H5", "C6", "C9"); // triple 5
 		
-		assertTrue(h1.hasTriple());
-		assertFalse(nothing.hasTriple());
+		assertTrue(h1.hasSet());
+		assertFalse(nothing.hasSet());
 	}
 	
 	public void testFourOfKind() {
