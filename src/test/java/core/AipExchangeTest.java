@@ -27,7 +27,7 @@ public class AipExchangeTest extends TestCase {
 		List<Card> ex1 = flush1Away.exchange();
 
 		assertEquals(1, ex1.size());
-		assertTrue(ex1.contains(new Card("C5")));
+		assertTrue(ex1.contains(Deck.C5));
 	}
 	
 	public void test2AwayFlush() {
@@ -43,16 +43,28 @@ public class AipExchangeTest extends TestCase {
 		List<Card> ex = HandTest.threeOfKind.exchange();
 
 		assertEquals(2, ex.size());
-		assertTrue(ex.contains(new Card("C2")));
-		assertTrue(ex.contains(new Card("D5")));
+		assertTrue(ex.contains(Deck.C2));
+		assertTrue(ex.contains(Deck.D5));
 	}
 	
 	public void testNothingHandExchange() {
 		List<Card> ex = HandTest.nothing.exchange();
 
 		assertEquals(3, ex.size());
-		assertTrue(ex.contains(new Card("D2")));
-		assertTrue(ex.contains(new Card("C4")));
-		assertTrue(ex.contains(new Card("H6")));
+		assertTrue(ex.contains(Deck.D2));
+		assertTrue(ex.contains(Deck.C4));
+		assertTrue(ex.contains(Deck.H6));
 	}
+	
+//	public void test1AwayFullHouse() {
+//		List<Card> ex2 = HandTest.twoPair.exchange();
+//		List<Card> ex3 = HandTest.threeOfKind.exchange();
+//		// TODO test for what card gets exchanged when already has a set, lowest card or doesn't matter?
+//
+//		assertEquals(1, ex2.size());
+//		assertTrue(ex2.contains(Deck.HK));
+//		
+//		assertEquals(1, ex3.size());
+//		assertTrue(ex3.contains(Deck.C2) || ex3.contains(Deck.D5));
+//	}
 }

@@ -250,6 +250,8 @@ public class Hand implements Comparable<Hand> {
 	public List<Card> exchange() {
 		if (scoreHand() >= STRAIGHT) {
 			return Collections.emptyList();
+//		} else if (hasSet() || hasTwoPairs()) {
+//			return is1AwayFullHouse();
 		} else if (!isAwayFlushN(1).isEmpty()) {
 			return isAwayFlushN(1);
 		} else if (!isAwayFlushN(2).isEmpty()) {
@@ -260,6 +262,15 @@ public class Hand implements Comparable<Hand> {
 			return Arrays.asList(cards.get(0), cards.get(1), cards.get(2));
 		}
 	}
+
+//	private List<Card> is1AwayFullHouse() {
+//		if (hasTwoPairs()) {
+//			return rMap().values().stream().filter(l -> l.size() != 2).flatMap(List::stream).collect(Collectors.toList());
+//		} else { // set (3 of a kind)
+//			// TODO refactor, make a judgement on which of the 2 cards to remove ?
+//			return Arrays.asList(rMap().values().stream().filter(l -> l.size() != 3).flatMap(List::stream).collect(Collectors.toList()).get(0));
+//		}
+//	}
 
 	private List<Card> is1AwayFourOfKind() {
 		return rMap().values().stream().filter(l -> l.size() != 3).flatMap(List::stream).collect(Collectors.toList());
