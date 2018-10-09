@@ -1,6 +1,7 @@
 package core;
 
 import java.util.List;
+import java.util.Optional;
 
 import junit.framework.TestCase;
 
@@ -145,6 +146,41 @@ public class AipExchangeTest extends TestCase {
 
 		assertEquals(1, ex.size());
 		assertTrue(ex.contains(Deck.HK));
+	}
+	
+	public void test3CardSeqExchange() {
+		Hand h2 = new Hand("H2", "D9", "H10", "DJ", "C5");
+		List<Card> ex2 = h2.exchange();
+		assertEquals(2, ex2.size());
+		assertTrue(ex2.contains(Deck.H2));
+		assertTrue(ex2.contains(Deck.C5));
+		
+		Hand h3 = new Hand("H2", "C3", "D10", "HJ", "CQ");
+		List<Card> ex3 = h3.exchange();
+		assertEquals(2, ex3.size());
+		assertTrue(ex3.contains(Deck.H2));
+		assertTrue(ex3.contains(Deck.C3));
+		
+		Hand h4 = new Hand("HA", "C2", "D3", "S9", "CA");
+		List<Card> ex4 = h4.sequenceOf3().get();
+		assertEquals(2, ex4.size());
+		assertTrue(ex4.contains(Deck.S9));
+		assertTrue(ex4.contains(Deck.CA) || ex4.contains(Deck.HA));
+		
+		Hand h5 = new Hand("S2", "C3", "HA", "DK", "CQ"); // toss 2,3 over K,Q
+		List<Card> ex5 = h5.exchange();
+		assertEquals(2, ex5.size());
+		assertTrue(ex5.contains(Deck.S2) || ex5.contains(Deck.DK));
+		assertTrue(ex5.contains(Deck.C3) || ex5.contains(Deck.CQ));
+	}
+	
+	public void testBadHandExchange() {
+		List<Card> ex = HandTest.nothing.exchange();
+		
+		assertEquals(3, ex.size());
+		assertTrue(ex.contains(Deck.D2));
+		assertTrue(ex.contains(Deck.C4));
+		assertTrue(ex.contains(Deck.H6));
 	}
 	
 //	public void test1AwayFullHouse() {
