@@ -265,6 +265,8 @@ public class Hand implements Comparable<Hand> {
 			return isAwayFlushN(2);
 		} else if (hasSet()) {
 			return is1AwayFourOfKind();
+		} else if (hasTwoPairs() || hasPair()) {
+			return nonPairCards();
 		} else {
 			return Arrays.asList(cards.get(0), cards.get(1), cards.get(2));
 		}
@@ -279,8 +281,18 @@ public class Hand implements Comparable<Hand> {
 //		}
 //	}
 
+	private List<Card> nonPairCards() {
+		return rMap().values().stream()
+			.filter(l -> l.size() != 2)
+			.flatMap(List::stream)
+			.collect(Collectors.toList());
+	}
+
 	private List<Card> is1AwayFourOfKind() {
-		return rMap().values().stream().filter(l -> l.size() != 3).flatMap(List::stream).collect(Collectors.toList());
+		return rMap().values().stream()
+			.filter(l -> l.size() != 3)
+			.flatMap(List::stream)
+			.collect(Collectors.toList());
 	}
 
 	public List<Card> is1AwayStraightFlush() {
