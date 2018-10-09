@@ -131,6 +131,22 @@ public class AipExchangeTest extends TestCase {
 		assertTrue(ex1.contains(Deck.C8));
 	}
 	
+	public void testSinglePairExchange() {
+		List<Card> ex = HandTest.pair.exchange();
+
+		assertEquals(3, ex.size());
+		assertTrue(ex.contains(Deck.C4));
+		assertTrue(ex.contains(Deck.C7));
+		assertTrue(ex.contains(Deck.D3));
+	}
+	
+	public void testTwoPairExchange() {
+		List<Card> ex = HandTest.twoPair.exchange();
+
+		assertEquals(1, ex.size());
+		assertTrue(ex.contains(Deck.HK));
+	}
+	
 //	public void test1AwayFullHouse() {
 //		List<Card> ex2 = HandTest.twoPair.exchange();
 //		List<Card> ex3 = HandTest.threeOfKind.exchange();
