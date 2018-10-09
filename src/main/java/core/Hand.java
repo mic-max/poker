@@ -257,7 +257,7 @@ public class Hand implements Comparable<Hand> {
 		} else if (hasSet()) {
 			return is1AwayFourOfKind();
 		} else {
-			return Arrays.asList(cards.get(3), cards.get(4)); // keep top 2 cards
+			return Arrays.asList(cards.get(0), cards.get(1), cards.get(2));
 		}
 	}
 
