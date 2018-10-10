@@ -97,11 +97,11 @@ public class Hand implements Comparable<Hand> {
 
 		return Optional.of(cards.stream().filter(c -> c.getSuit() != s.get()).collect(Collectors.toList()));
 	}
-	
+
 	public Optional<List<Card>> is1AwayFlush() {
 		return isAwayFlushN(1);
 	}
-	
+
 	public Optional<List<Card>> is2AwayFlush() {
 		return isAwayFlushN(2);
 	}
@@ -111,7 +111,7 @@ public class Hand implements Comparable<Hand> {
 		if (isStraight())
 			return Optional.empty();
 
-		for (Card c : getCards()) {
+		for (Card c : cards) {
 			for (Rank r : Rank.values()) {
 				Hand h = copyHand();
 				h.swap(c, new Card(Suit.Spade, r));
@@ -294,9 +294,9 @@ public class Hand implements Comparable<Hand> {
 			return Collections.emptyList();
 		} else if (royal1.isPresent()) {
 			return royal1.get();
-		}  else if (straightFlush1.isPresent()) {
+		} else if (straightFlush1.isPresent()) {
 			return straightFlush1.get();
-		}  else if (flush1.isPresent()) {
+		} else if (flush1.isPresent()) {
 			return flush1.get();
 		} else if (straight1.isPresent()) {
 			return straight1.get();
@@ -337,6 +337,23 @@ public class Hand implements Comparable<Hand> {
 	}
 
 	public Optional<List<Card>> is1AwayRoyalFlush() {
-		return is1AwayStraightFlush();
+		Optional<List<Card>> sf = is1AwayStraightFlush();
+
+		if (sf.isPresent()) {
+			Optional<Suit> flush1 = isFlushSuitN(1);
+			Optional<Suit> flush = isFlushSuitN(0);
+			Card remove = sf.get().get(0);
+			Suit suit = flush.isPresent() ? flush.get() : flush1.get();
+
+			for (Rank r : Stream.of(Rank.values()).filter(e -> e.getValue() >= Rank.Ten.getValue()).collect(Collectors.toList())) {
+				Hand h = copyHand();
+				h.swap(remove, new Card(suit, r));
+				
+				if (h.isRoyalFlush())
+					return Optional.of(Collections.singletonList(remove));
+			}
+		}
+
+		return Optional.empty();
 	}
 }
