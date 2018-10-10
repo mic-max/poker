@@ -40,7 +40,7 @@ public class PokerGame {
 		aip.swap(discard, pickup);
 		boolean aipwin = aip.compareTo(ops) > 0;
 
-		System.out.printf("Winner is   : %-8s '%s'\n", aipwin ? "AIP" : "Opponent", aipwin ? aip.handName : ops.handName);
+		System.out.printf("Winner is   : %-8s '%s'\n", aipwin ? "AIP" : "Opponent", aipwin ? aip.getPh() : ops.getPh());
 		System.out.println("--------------------------------");
 	}
 
