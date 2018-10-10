@@ -53,12 +53,21 @@ public class HandCompareSameTest extends TestCase {
 	}
 	
 	public void testCompareFlushes() {
-		Hand flHeart = new Hand("HK", "HJ", "H9", "H4", "H6");
-		Hand flHeart2 = new Hand("SK", "SJ", "S9", "S4", "S5");
+		Hand flHeart = new Hand("HK", "HJ", "H9", "H6", "H4");
+		Hand flSpade1 = new Hand("SK", "SJ", "S9", "S6", "S5");
+		Hand flClub2 = new Hand("CK", "CJ", "C9", "C7", "C4");
+		Hand flSpade3 = new Hand("SK", "SJ", "S10", "S6", "S4");
+		Hand flSpade4 = new Hand("SK", "SQ", "S9", "S6", "S4");
+		Hand flSpade5 = new Hand("SA", "SJ", "S9", "S6", "S4");
+		
 		Hand flClub = new Hand("CA", "CJ", "C3", "C9", "C10");
 		
 		assertTrue(flHeart.compareTo(HandTest.flush) > 0);
-		assertTrue(flHeart2.compareTo(HandTest.flush) < 0); // DK", "DJ", "D9", "D4", "D6
+		assertTrue(flSpade1.compareTo(HandTest.flush) > 0);
+		assertTrue(flClub2.compareTo(HandTest.flush) > 0);
+		assertTrue(flSpade3.compareTo(HandTest.flush) > 0);
+		assertTrue(flSpade4.compareTo(HandTest.flush) > 0);
+		assertTrue(flSpade5.compareTo(HandTest.flush) > 0);
 		assertTrue(flClub.compareTo(HandTest.flush) > 0);
 	}
 	
