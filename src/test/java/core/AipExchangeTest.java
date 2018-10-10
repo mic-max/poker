@@ -21,7 +21,22 @@ public class AipExchangeTest extends TestCase {
 		assertTrue(rfExchange.isEmpty());
 	}
 
-	public void test1AwayFlush() {
+	public void test1AwayRoyalFlushExchange() {
+		Hand rf1Off = new Hand("HA", "HK", "HQ", "C4", "H10");
+		List<Card> ex = rf1Off.exchange();
+		assertEquals(1, ex.size());
+		assertTrue(ex.contains(Deck.C4));
+
+		// Should always try to get the HA instead of the also possible H9 for a straight flush vs. royal flush
+		// TODO try with H8, but exchange method won't swap bc its already a flush
+		Hand rf1 = new Hand("HK", "HQ", "HJ", "H10", "C8");
+
+		List<Card> ex1 = rf1.exchange();
+		assertEquals(1, ex1.size());
+		assertTrue(ex1.contains(Deck.C8));
+	}
+
+	public void test1AwayFlushExchange() {
 		Hand flush1Away = new Hand("D5", "D6", "D10", "C5", "DA");
 		List<Card> ex1 = flush1Away.exchange();
 
@@ -29,33 +44,7 @@ public class AipExchangeTest extends TestCase {
 		assertTrue(ex1.contains(Deck.C5));
 	}
 
-	public void test2AwayFlush() {
-		Hand flush2Away = new Hand("D5", "D6", "D10", "C5", "HA");
-		List<Card> ex1 = flush2Away.exchange();
-
-		assertEquals(2, ex1.size());
-		assertTrue(ex1.contains(Deck.C5));
-		assertTrue(ex1.contains(Deck.HA));
-	}
-
-	public void test1AwayFourOfKind() {
-		List<Card> ex = HandTest.threeOfKind.exchange();
-
-		assertEquals(2, ex.size());
-		assertTrue(ex.contains(Deck.C2));
-		assertTrue(ex.contains(Deck.D5));
-	}
-
-	public void testNothingHandExchange() {
-		List<Card> ex = HandTest.nothing.exchange();
-
-		assertEquals(3, ex.size());
-		assertTrue(ex.contains(Deck.D2));
-		assertTrue(ex.contains(Deck.C4));
-		assertTrue(ex.contains(Deck.H6));
-	}
-
-	public void test1AwayStraight() {
+	public void test1AwayStraightExchange() {
 		Hand seq4x = new Hand("D4", "D5", "H6", "C7", "H10");
 		List<Card> e4x = seq4x.exchange();
 		assertEquals(1, e4x.size());
@@ -107,48 +96,24 @@ public class AipExchangeTest extends TestCase {
 		assertTrue(e4.contains(Deck.HA));
 	}
 
-	public void test1AwayStraightFlush() {
-		Hand oneAwaySF = new Hand("D8", "D9", "D10", "H5", "DQ");
-		List<Card> sfx = oneAwaySF.exchange();
-		assertEquals(1, sfx.size());
-		assertTrue(sfx.contains(Deck.H5));
+	public void test2AwayFlushExchange() {
+		Hand flush2Away = new Hand("D5", "D6", "D10", "C5", "HA");
+		List<Card> ex1 = flush2Away.exchange();
 
-		List<Card> sf = HandTest.straightFlush.exchange();
-		assertEquals(0, sf.size());
+		assertEquals(2, ex1.size());
+		assertTrue(ex1.contains(Deck.C5));
+		assertTrue(ex1.contains(Deck.HA));
 	}
 
-	public void test1AwayRoyalFlush() {
-		Hand rf1Off = new Hand("HA", "HK", "HQ", "C4", "H10");
-		List<Card> ex = rf1Off.exchange();
-		assertEquals(1, ex.size());
-		assertTrue(ex.contains(Deck.C4));
+	public void test1AwayFourOfKindExchange() {
+		List<Card> ex = HandTest.threeOfKind.exchange();
 
-		// Should always try to get the HA instead of the also possible H9 for a straight flush vs. royal flush
-		// TODO try with H8, but exchange method won't swap bc its already a flush
-		Hand rf1 = new Hand("HK", "HQ", "HJ", "H10", "C8");
-
-		List<Card> ex1 = rf1.exchange();
-		assertEquals(1, ex1.size());
-		assertTrue(ex1.contains(Deck.C8));
+		assertEquals(2, ex.size());
+		assertTrue(ex.contains(Deck.C2));
+		assertTrue(ex.contains(Deck.D5));
 	}
 
-	public void testSinglePairExchange() {
-		List<Card> ex = HandTest.pair.exchange();
-
-		assertEquals(3, ex.size());
-		assertTrue(ex.contains(Deck.C4));
-		assertTrue(ex.contains(Deck.C7));
-		assertTrue(ex.contains(Deck.D3));
-	}
-
-	public void testTwoPairExchange() {
-		List<Card> ex = HandTest.twoPair.exchange();
-
-		assertEquals(1, ex.size());
-		assertTrue(ex.contains(Deck.HK));
-	}
-
-	public void test3CardSequence() {
+	public void test3CardSequenceExchange() {
 		Hand h2 = new Hand("H2", "D9", "H10", "DJ", "C5");
 		List<Card> ex2 = h2.exchange();
 		assertEquals(2, ex2.size());
@@ -172,6 +137,31 @@ public class AipExchangeTest extends TestCase {
 		assertEquals(2, ex5.size());
 		assertTrue(ex5.contains(Deck.S2) || ex5.contains(Deck.DK));
 		assertTrue(ex5.contains(Deck.C3) || ex5.contains(Deck.CQ));
+	}
+
+	public void testTwoPairExchange() {
+		List<Card> ex = HandTest.twoPair.exchange();
+
+		assertEquals(1, ex.size());
+		assertTrue(ex.contains(Deck.HK));
+	}
+
+	public void testSinglePairExchange() {
+		List<Card> ex = HandTest.pair.exchange();
+
+		assertEquals(3, ex.size());
+		assertTrue(ex.contains(Deck.C4));
+		assertTrue(ex.contains(Deck.C7));
+		assertTrue(ex.contains(Deck.D3));
+	}
+
+	public void testNothingHandExchange() {
+		List<Card> ex = HandTest.nothing.exchange();
+
+		assertEquals(3, ex.size());
+		assertTrue(ex.contains(Deck.D2));
+		assertTrue(ex.contains(Deck.C4));
+		assertTrue(ex.contains(Deck.H6));
 	}
 
 	public void testBadHandExchange() {
