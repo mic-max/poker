@@ -184,5 +184,13 @@ public class HandTest extends TestCase {
 		assertTrue(straightFlush.compareTo(royalFlush) < 0);
 		assertTrue(royalFlush.compareTo(nothing) > 0);
 	}
+	
+	public void testIndependentOfExchange() {
+		Hand h = new Hand("S4", "S5", "S6", "S7", "S8");	
+		assertEquals("Straight Flush", h.handName);
+
+		h.swap(Deck.S4, Deck.C8);
+		assertEquals("Pair", h.handName);
+	}
 
 }
