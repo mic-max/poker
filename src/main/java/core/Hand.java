@@ -97,6 +97,14 @@ public class Hand implements Comparable<Hand> {
 
 		return Optional.of(cards.stream().filter(c -> c.getSuit() != s.get()).collect(Collectors.toList()));
 	}
+	
+	public Optional<List<Card>> is1AwayFlush() {
+		return isAwayFlushN(1);
+	}
+	
+	public Optional<List<Card>> is2AwayFlush() {
+		return isAwayFlushN(2);
+	}
 
 	// Returns a list of cards that are preventing the straight
 	public Optional<List<Card>> is1AwayStraight() {
@@ -277,9 +285,9 @@ public class Hand implements Comparable<Hand> {
 	public List<Card> exchange() {
 		Optional<List<Card>> royal1 = is1AwayRoyalFlush();
 		Optional<List<Card>> straightFlush1 = is1AwayStraightFlush();
-		Optional<List<Card>> flush1 = isAwayFlushN(1);
+		Optional<List<Card>> flush1 = is1AwayFlush();
 		Optional<List<Card>> straight1 = is1AwayStraight();
-		Optional<List<Card>> flush2 = isAwayFlushN(2);
+		Optional<List<Card>> flush2 = is2AwayFlush();
 		Optional<List<Card>> seq3 = sequenceOf3();
 
 		if (scoreHand() >= STRAIGHT) {
@@ -315,9 +323,13 @@ public class Hand implements Comparable<Hand> {
 
 	public Optional<List<Card>> is1AwayStraightFlush() {
 		Optional<List<Card>> straight = is1AwayStraight();
-		Optional<List<Card>> flush = isAwayFlushN(1);
+		Optional<List<Card>> flush = is1AwayFlush();
 
-		if (straight.isPresent() && flush.isPresent() && straight.get().size() == 1
+		if (isStraight() && is1AwayFlush().isPresent())
+			return flush;
+		else if (isFlush() && is1AwayStraight().isPresent())
+			return straight;
+		else if (straight.isPresent() && flush.isPresent() && straight.get().size() == 1
 				&& straight.get().equals(flush.get()))
 			return straight;
 
