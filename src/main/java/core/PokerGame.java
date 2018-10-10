@@ -11,7 +11,7 @@ public class PokerGame {
 		List<String> lines = new ArrayList<>();
 
 		try (BufferedReader br = Files.newBufferedReader(Paths.get(filename))) {
-			lines = br.lines().collect(Collectors.toList());
+			lines = br.lines().filter(l -> l.trim().length() > 0).collect(Collectors.toList());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
