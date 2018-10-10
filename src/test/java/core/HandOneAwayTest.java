@@ -59,10 +59,30 @@ public class HandOneAwayTest extends TestCase {
 	}
 
 	public void test1AwayFourOfKind() {
-
+		Hand h1 = new Hand("C2", "D2", "H2", "C7", "HK");
+		Hand h2 = new Hand("C2", "D2", "H2", "C7", "H7");
+		Hand h3 = new Hand("C2", "D2", "H7", "C7", "HK");
+		Hand h4 = new Hand("C2", "D2", "H2", "S2", "CJ");
+		
+		assertTrue(h1.is1AwayFourOfKind().isPresent());
+		assertTrue(h2.is1AwayFourOfKind().isPresent());
+		assertFalse(h3.is1AwayFourOfKind().isPresent());
+		assertFalse(h4.is1AwayFourOfKind().isPresent());
 	}
 
 	public void testSequenceOf3() {
-
+		Hand h1 = new Hand("C2", "D2", "H3", "C3", "H4");
+		Hand h2 = new Hand("C2", "D3", "H4", "C5", "H6");
+		Hand h3 = new Hand("C2", "D3", "HA", "C9", "H10");
+		Hand h4 = new Hand("CA", "DK", "HQ", "C5", "H6");
+		Hand h5 = new Hand("C2", "D3", "HA", "CK", "HQ");
+		Hand h6 = new Hand("C2", "D3", "H5", "C6", "H8");
+		
+		assertTrue(h1.sequenceOf3().isPresent());
+		assertTrue(h2.sequenceOf3().isPresent());
+		assertTrue(h3.sequenceOf3().isPresent());
+		assertTrue(h4.sequenceOf3().isPresent());
+		assertTrue(h5.sequenceOf3().isPresent());
+		assertFalse(h6.sequenceOf3().isPresent());
 	}
 }
