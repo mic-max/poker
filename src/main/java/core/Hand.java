@@ -6,17 +6,8 @@ import java.util.stream.*;
 
 public class Hand implements Comparable<Hand> {
 
-	private static final int STRAIGHT_FLUSH = 8000000;
-	private static final int FOUR_OF_A_KIND = 7000000;
-	private static final int FULL_HOUSE     = 6000000;
-	private static final int FLUSH          = 5000000;
-	private static final int STRAIGHT       = 4000000;
-	private static final int SET            = 3000000;
-	private static final int TWO_PAIRS      = 2000000;
-	private static final int ONE_PAIR       = 1000000;
-
 	private List<Card> cards;
-	public String      handName;
+	private PokerHand ph;
 
 	public Hand(String... rankSuit) {
 		this(Arrays.asList(rankSuit));
@@ -35,6 +26,10 @@ public class Hand implements Comparable<Hand> {
 
 	public List<Card> getCards() {
 		return cards;
+	}
+	
+	public PokerHand getPh() {
+		return ph;
 	}
 
 	@Override
@@ -222,50 +217,53 @@ public class Hand implements Comparable<Hand> {
 	private int scoreHand() {
 		boolean flush = isFlush();
 		boolean straight = isStraight();
+		
+		int extra = 0;
 
 		if (flush && straight) {
 			Card hiCard = getHighCard();
-			handName = hiCard.getRank() == Rank.Ace ? "Royal Flush" : "Straight Flush";
-			return STRAIGHT_FLUSH + getHighCard().value();
+			ph = hiCard.getRank() == Rank.Ace ? PokerHand.RoyalFlush : PokerHand.StraightFlush;
+			extra = getHighCard().value();
 		} else if (hasFourOfKind()) {
 			Card top = cards.get(4);
 			if (cards.get(0).getRank() == cards.get(3).getRank())
 				top = cards.get(0);
-			handName = "Four of a Kind";
-			return FOUR_OF_A_KIND + top.value();
+			ph = PokerHand.FourOfaKind;
+			extra = top.value();
 		} else if (isFullHouse()) {
-			handName = "Full House";
-			return FULL_HOUSE + cards.get(2).value();
+			ph = PokerHand.FullHouse;
+			extra = cards.get(2).value();
 		} else if (flush) {
-			int score = cards.get(0).getSuit().getValue();
+			extra = cards.get(0).getSuit().getValue();
 			// TODO refactor this
 			for (int i = 4; i >= 0; i--)
-				score += cards.get(i).getRank().getValue() * Rank.Ace.getValue() * (i + 2);
-			handName = "Flush";
-			return FLUSH + score;
+				extra += cards.get(i).getRank().getValue() * Rank.Ace.getValue() * (i + 2);
+			ph = PokerHand.Flush;
 		} else if (straight) {
-			handName = "Straight";
-			return STRAIGHT + getHighCard().value();
+			ph = PokerHand.Straight;
+			extra = getHighCard().value();
 		} else if (hasSet()) {
-			handName = "Set";
-			return SET + cards.get(2).value();
+			ph = PokerHand.Set;
+			extra = cards.get(2).value();
 		} else if (hasTwoPairs()) {
 			Card top = cards.get(4);
 			if (top.getRank() != cards.get(3).getRank())
 				top = cards.get(3);
-			handName = "Two Pairs";
-			return TWO_PAIRS + top.value();
+			ph = PokerHand.TwoPair;
+			extra = top.value();
 		} else if (hasPair()) {
 			Card top = cards.get(4);
 
 			for (int i = 3; top.getRank() != cards.get(i).getRank(); i--)
 				top = cards.get(i);
-			handName = "Pair";
-			return ONE_PAIR + top.value();
+			ph = PokerHand.Pair;
+			extra = top.value();
+		} else {
+			ph = PokerHand.HighCard;			
+			extra = getHighCard().value();
 		}
 
-		handName = "High Card";
-		return getHighCard().value();
+		return ph.value() + extra;
 	}
 
 	@Override
@@ -289,7 +287,7 @@ public class Hand implements Comparable<Hand> {
 		Optional<List<Card>> four1 = is1AwayFourOfKind();
 		Optional<List<Card>> seq3 = sequenceOf3();
 
-		if (scoreHand() >= STRAIGHT) {
+		if (scoreHand() >= PokerHand.Straight.value()) {
 			return Collections.emptyList();
 		} else if (royal1.isPresent()) {
 			return royal1.get();

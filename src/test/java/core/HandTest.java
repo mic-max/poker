@@ -187,10 +187,10 @@ public class HandTest extends TestCase {
 	
 	public void testIndependentOfExchange() {
 		Hand h = new Hand("S4", "S5", "S6", "S7", "S8");	
-		assertEquals("Straight Flush", h.handName);
+		assertEquals(PokerHand.StraightFlush, h.getPh());
 
 		h.swap(Deck.S4, Deck.C8);
-		assertEquals("Pair", h.handName);
+		assertEquals(PokerHand.Pair, h.getPh());
 	}
 
 }
