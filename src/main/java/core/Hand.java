@@ -206,7 +206,7 @@ public class Hand implements Comparable<Hand> {
 	}
 
 	public boolean isRoyalFlush() {
-		return isStraightFlush() && getHighCard().getRank() == Rank.Ace;
+		return getHighCard().getRank() == Rank.Ace && isStraightFlush();
 	}
 
 	public boolean isStraightFlush() {
@@ -288,6 +288,7 @@ public class Hand implements Comparable<Hand> {
 		Optional<List<Card>> flush1 = is1AwayFlush();
 		Optional<List<Card>> straight1 = is1AwayStraight();
 		Optional<List<Card>> flush2 = is2AwayFlush();
+		Optional<List<Card>> four1 = is1AwayFourOfKind();
 		Optional<List<Card>> seq3 = sequenceOf3();
 
 		if (scoreHand() >= STRAIGHT) {
@@ -302,8 +303,8 @@ public class Hand implements Comparable<Hand> {
 			return straight1.get();
 		} else if (flush2.isPresent()) {
 			return flush2.get();
-		} else if (hasSet()) {
-			return is1AwayFourOfKind();
+		} else if (four1.isPresent()) {
+			return four1.get();
 		} else if (seq3.isPresent()) {
 			return seq3.get();
 		} else if (hasTwoPairs() || hasPair()) {
@@ -317,8 +318,11 @@ public class Hand implements Comparable<Hand> {
 		return rMap().values().stream().filter(l -> l.size() != 2).flatMap(List::stream).collect(Collectors.toList());
 	}
 
-	private List<Card> is1AwayFourOfKind() {
-		return rMap().values().stream().filter(l -> l.size() != 3).flatMap(List::stream).collect(Collectors.toList());
+	public Optional<List<Card>> is1AwayFourOfKind() {
+		if (!hasSet() || hasFourOfKind())
+			return Optional.empty();
+		return Optional.of(
+				rMap().values().stream().filter(l -> l.size() != 3).flatMap(List::stream).collect(Collectors.toList()));
 	}
 
 	public Optional<List<Card>> is1AwayStraightFlush() {
@@ -345,10 +349,11 @@ public class Hand implements Comparable<Hand> {
 			Card remove = sf.get().get(0);
 			Suit suit = flush.isPresent() ? flush.get() : flush1.get();
 
-			for (Rank r : Stream.of(Rank.values()).filter(e -> e.getValue() >= Rank.Ten.getValue()).collect(Collectors.toList())) {
+			for (Rank r : Stream.of(Rank.values()).filter(e -> e.getValue() >= Rank.Ten.getValue())
+					.collect(Collectors.toList())) {
 				Hand h = copyHand();
 				h.swap(remove, new Card(suit, r));
-				
+
 				if (h.isRoyalFlush())
 					return Optional.of(Collections.singletonList(remove));
 			}
