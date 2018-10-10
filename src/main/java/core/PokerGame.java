@@ -20,7 +20,7 @@ public class PokerGame {
 	}
 
 	private static void processLine(String s) {
-		List<String> cards = Arrays.asList(s.split(" "));
+		List<String> cards = Arrays.asList(s.split("\\s+"));
 
 		Hand ops = new Hand(cards.subList(0, 5));
 		Hand aip = new Hand(cards.subList(5, 10));
@@ -51,7 +51,8 @@ public class PokerGame {
 		List<String> lines = loadInputs(args[0]);
 
 		for (String line : lines) {
-			processLine(line);
+			if (!line.startsWith("|"))
+				processLine(line);
 		}
 	}
 }
