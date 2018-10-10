@@ -47,7 +47,15 @@ public class HandOneAwayTest extends TestCase {
 	}
 
 	public void test1AwayRoyalFlush() {
+		Hand h1 = new Hand("C2", "C3", "C4", "C5", "D9");
+		Hand h2 = new Hand("C2", "C3", "C4", "C5", "CA");
+		Hand h3 = new Hand("CA", "CK", "CQ", "CJ", "H6");
+		Hand h4 = new Hand("S10", "SK", "SQ", "SJ", "S2");
 
+		assertFalse(h1.is1AwayRoyalFlush().isPresent());
+		assertFalse(h2.is1AwayRoyalFlush().isPresent());
+		assertTrue(h3.is1AwayRoyalFlush().isPresent());
+		assertTrue(h4.is1AwayRoyalFlush().isPresent());
 	}
 
 	public void test1AwayFourOfKind() {
