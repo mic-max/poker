@@ -36,7 +36,8 @@ public enum Rank {
 	
 	public static Rank getEnum(String value) {
 		for (Rank v : values())
-			if (v.rank.equals(value)) return v;
+			if (v.rank.equals(value))
+				return v;
 		throw new IllegalArgumentException();
 	}
 }

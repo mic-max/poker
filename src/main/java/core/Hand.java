@@ -28,9 +28,9 @@ public class Hand implements Comparable<Hand> {
 		if (new HashSet<String>(rankSuit).size() != 5)
 			throw new IllegalArgumentException();
 
-		handName = "Not Calculated Yet";
 		cards = rankSuit.stream().map(rs -> new Card(rs)).collect(Collectors.toList());
 		Collections.sort(cards);
+		scoreHand();
 	}
 
 	public List<Card> getCards() {
@@ -132,11 +132,8 @@ public class Hand implements Comparable<Hand> {
 		cards.remove(c);
 	}
 
-	private void swap(Card rem, Card add) {
-		removeCard(rem);
-		addCard(add);
-
-		Collections.sort(cards);
+	public void swap(Card rem, Card add) {
+		swap(Arrays.asList(rem), Arrays.asList(add));
 	}
 
 	public void swap(List<Card> remove, List<Card> add) {
@@ -150,6 +147,7 @@ public class Hand implements Comparable<Hand> {
 			addCard(a);
 
 		Collections.sort(cards);
+		scoreHand();
 	}
 
 	public boolean hasPair() {
@@ -227,7 +225,7 @@ public class Hand implements Comparable<Hand> {
 
 		if (flush && straight) {
 			Card hiCard = getHighCard();
-			handName = hiCard.getRank() == Rank.Ace ? "Royal Flush" : "Straigh Flush";
+			handName = hiCard.getRank() == Rank.Ace ? "Royal Flush" : "Straight Flush";
 			return STRAIGHT_FLUSH + getHighCard().value();
 		} else if (hasFourOfKind()) {
 			Card top = cards.get(4);
