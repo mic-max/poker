@@ -4,6 +4,16 @@ import junit.framework.TestCase;
 
 public class HandCompareSameTest extends TestCase {
 	
+	public void testCompareHighCards() {
+		Hand highAce = new Hand("SA", "H10", "C5", "C2", "D9");
+		Hand highQueen = new Hand("SQ", "DJ", "D4", "H7", "S3");
+		Hand highSeven = new Hand("S2", "C3", "H4", "C7", "D6");
+
+		assertTrue(HandTest.nothing.compareTo(highAce) < 0);
+		assertTrue(HandTest.nothing.compareTo(highQueen) < 0);
+		assertTrue(HandTest.nothing.compareTo(highSeven) > 0);
+	}
+	
 	public void testCompareSinglePairs() {
 		Hand pairAce = new Hand("SA", "HA", "C5", "C2", "D9");
 		Hand pairQueen = new Hand("CQ", "DQ", "D2", "H7", "S3");
