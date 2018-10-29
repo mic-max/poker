@@ -1,2 +1,0 @@
-| All permutations of the same hand should yield the same result
-| Opponent        | AIP             | Swap
