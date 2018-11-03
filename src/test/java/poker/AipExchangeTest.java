@@ -1,4 +1,4 @@
-package core;
+package poker;
 
 import java.util.List;
 import junit.framework.TestCase;
@@ -108,9 +108,8 @@ public class AipExchangeTest extends TestCase {
 	public void test1AwayFourOfKindExchange() {
 		List<Card> ex = HandTest.threeOfKind.exchange();
 
-		assertEquals(2, ex.size());
+		assertEquals(1, ex.size());
 		assertTrue(ex.contains(Deck.C2));
-		assertTrue(ex.contains(Deck.D5));
 	}
 
 	public void test3CardSequenceExchange() {

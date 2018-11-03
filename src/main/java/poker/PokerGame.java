@@ -1,4 +1,4 @@
-package core;
+package poker;
 
 import java.io.*;
 import java.nio.file.*;
@@ -6,6 +6,8 @@ import java.util.*;
 import java.util.stream.*;
 
 public class PokerGame {
+	
+	public static Random RANDOM = new Random(201811613);
 
 	private static List<String> loadInputs(String filename) {
 		List<String> lines = new ArrayList<>();

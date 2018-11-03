@@ -1,4 +1,4 @@
-package core;
+package poker;
 
 import java.util.*;
 import junit.framework.TestCase;
@@ -129,18 +129,18 @@ public class HandTest extends TestCase {
 		assertTrue(thrown);
 	}
 
-	public void testCompareHandsWithSameCard() {
-		boolean thrown = false;
-		Hand h1 = new Hand("S2", "C4", "CK", "S5", "D8");
-		Hand h2 = new Hand("S3", "C9", "CQ", "S5", "D10");
-		try {
-			h1.compareTo(h2);
-		} catch (IllegalStateException e) {
-			thrown = true;
-		}
-
-		assertTrue(thrown);
-	}
+//	public void testCompareHandsWithSameCard() {
+//		boolean thrown = false;
+//		Hand h1 = new Hand("S2", "C4", "CK", "S5", "D8");
+//		Hand h2 = new Hand("S3", "C9", "CQ", "S5", "D10");
+//		try {
+//			h1.compareTo(h2);
+//		} catch (IllegalStateException e) {
+//			thrown = true;
+//		}
+//
+//		assertTrue(thrown);
+//	}
 
 	public void testHandMustBeFiveCards() {
 		boolean thrown = false;
@@ -191,6 +191,58 @@ public class HandTest extends TestCase {
 
 		h.swap(Deck.S4, Deck.C8);
 		assertEquals(PokerHand.Pair, h.getPh());
+	}
+	
+	public void testCreateRoyalFlush() {
+		Hand h = new Hand(PokerHand.RoyalFlush);
+		assertEquals(PokerHand.RoyalFlush, h.getPh());
+		
+		// test when given a suit
+	}
+	
+	public void testCreateStraightFlush() {
+		Hand h = new Hand(PokerHand.StraightFlush);
+		assertEquals(PokerHand.StraightFlush, h.getPh());
+	}
+	
+	public void testCreateFourOfaKind() {
+		Hand h = new Hand(PokerHand.FourOfaKind);
+		assertEquals(PokerHand.FourOfaKind, h.getPh());
+	}
+	
+	public void testCreateFullHouse() {
+		Hand h = new Hand(PokerHand.FullHouse);
+		assertEquals(PokerHand.FullHouse, h.getPh());
+	}
+	
+	public void testCreateFlush() {
+		Hand h = new Hand(PokerHand.Flush);
+		assertEquals(PokerHand.Flush, h.getPh());
+	}
+	
+	public void testCreateStraight() {
+		Hand h = new Hand(PokerHand.Straight);
+		assertEquals(PokerHand.Straight, h.getPh());
+	}
+	
+	public void testCreateSet() {
+		Hand h = new Hand(PokerHand.Set);
+		assertEquals(PokerHand.Set, h.getPh());
+	}
+	
+	public void testCreateTwoPair() {
+		Hand h = new Hand(PokerHand.TwoPair);
+		assertEquals(PokerHand.TwoPair, h.getPh());
+	}
+	
+	public void testCreatePair() {
+		Hand h = new Hand(PokerHand.Pair);
+		assertEquals(PokerHand.Pair, h.getPh());
+	}
+	
+	public void testCreateHighCard() {
+		Hand h = new Hand(PokerHand.HighCard);
+		assertEquals(PokerHand.HighCard, h.getPh());
 	}
 
 }

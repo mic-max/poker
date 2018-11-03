@@ -1,4 +1,4 @@
-package core;
+package poker;
 
 import junit.framework.TestCase;
 

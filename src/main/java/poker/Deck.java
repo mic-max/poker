@@ -1,4 +1,4 @@
-package core;
+package poker;
 
 public final class Deck {
 
